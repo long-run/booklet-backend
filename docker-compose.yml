@@ -1,8 +1,11 @@
 version: "3.6"
+
 services:
   booklet_backend:
     image: booklet/backend:latest
     build:
       context: .
+    volumes:
+      - .:/app
     ports:
       - 3000:3000
