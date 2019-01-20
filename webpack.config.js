@@ -1,7 +1,12 @@
 const path = require('path');
+const NodemonPlugin = require('nodemon-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
+  target: 'node',
+  externals: [nodeExternals()],
   entry: './src/www.ts',
+  mode: 'development',
   module: {
     rules: [
       {
@@ -12,12 +17,14 @@ module.exports = {
     ]
   },
   devtool: 'source-map',
-  target: 'node',
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ]
   },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
-  }
+  },
+  plugins: [
+    new NodemonPlugin(), // Dong
+  ],
 };

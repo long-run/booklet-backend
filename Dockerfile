@@ -3,7 +3,9 @@ FROM node:8
 COPY . /app
 
 WORKDIR /app
-RUN npm install && \
-    npm run build
+RUN yarn install
+# RUN yarn install && \
+    # yarn run build
 
-CMD node dist/bundle.js
+# CMD node dist/bundle.js
+CMD yarn run watch
