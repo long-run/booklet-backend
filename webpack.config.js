@@ -25,6 +25,12 @@ module.exports = {
     path: path.resolve(__dirname, 'dist')
   },
   plugins: [
-    new NodemonPlugin(), // Dong
+    new NodemonPlugin({
+      delay: "2500",
+      watch: path.resolve('./dist'),
+      ignore: ['*.js.map'],
+      verbose: true,
+      script: './dist/bundle.js'
+    }),
   ],
 };
