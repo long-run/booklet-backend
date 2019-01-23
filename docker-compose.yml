@@ -5,8 +5,10 @@ services:
     image: booklet/backend:latest
     build:
       context: .
+    command: yarn run watch
     volumes:
       - .:/app
+      - /app/node_modules
     ports:
       - 3000:3000
     stdin_open: true

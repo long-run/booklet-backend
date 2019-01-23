@@ -1,6 +1,6 @@
-FROM node:8
+FROM node:carbon-alpine
 
 WORKDIR /app
-RUN yarn install
+COPY package.json yarn.lock ./
 
-CMD yarn run watch
+RUN yarn install --frozen-lockfile
