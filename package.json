@@ -31,6 +31,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "apollo-server": "^2.3.3",
+    "express": "^4.16.4",
+    "graphql": "^14.1.1"
   }
 }
