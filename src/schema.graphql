@@ -1,18 +1,39 @@
 type Query {
-  feed: [Post!]!
-  drafts: [Post!]!
-  post(id: ID!): Post
 }
 
 type Mutation {
-  createDraft(title: String!, content: String): Post
-  deletePost(id: ID!): Post
-  publish(id: ID!): Post
+}
+
+type User {
+  u_idx: String!
+  u_id: String!
+}
+
+type BookFeed {
+  uniq_idx: String!
+  book: Book!
+  rating: Number!
+  status: FeedStatus!
+  background_theme: String!
+  note: String!
+  reg_date: String!
+  modified_date: String!
 }
 
 type Post {
-  id: ID!
-  published: Boolean!
+  user: User!
+  bookfeed: BookFeed!
+  like_count: Number!
+  liked: Boolean!
+}
+
+type Book {
   title: String!
-  content: String!
+  isbn: String!
+  author: String!
+  book_cover: String!
+}
+
+enum FeedStatus {
+  currently_reading, read, want_to_read
 }
