@@ -52,7 +52,7 @@ type BookEdge {
 }
 
 type BookFeed {
-  uniq_idx: String!
+  idx: String!
   book: Book!
   rating: Int!
   status: FeedStatus!
@@ -69,7 +69,7 @@ type BookFeedConnection {
 }
 
 input BookFeedCreateInput {
-  uniq_idx: String!
+  idx: String!
   book: BookCreateOneInput!
   rating: Int!
   status: FeedStatus!
@@ -90,8 +90,8 @@ type BookFeedEdge {
 }
 
 enum BookFeedOrderByInput {
-  uniq_idx_ASC
-  uniq_idx_DESC
+  idx_ASC
+  idx_DESC
   rating_ASC
   rating_DESC
   status_ASC
@@ -113,7 +113,7 @@ enum BookFeedOrderByInput {
 }
 
 type BookFeedPreviousValues {
-  uniq_idx: String!
+  idx: String!
   rating: Int!
   status: FeedStatus!
   background_theme: String!
@@ -140,8 +140,19 @@ input BookFeedSubscriptionWhereInput {
   NOT: [BookFeedSubscriptionWhereInput!]
 }
 
+input BookFeedUpdateDataInput {
+  idx: String
+  book: BookUpdateOneRequiredInput
+  rating: Int
+  status: FeedStatus
+  background_theme: String
+  note: String
+  reg_date: String
+  modified_date: String
+}
+
 input BookFeedUpdateInput {
-  uniq_idx: String
+  idx: String
   book: BookUpdateOneRequiredInput
   rating: Int
   status: FeedStatus
@@ -152,7 +163,7 @@ input BookFeedUpdateInput {
 }
 
 input BookFeedUpdateManyMutationInput {
-  uniq_idx: String
+  idx: String
   rating: Int
   status: FeedStatus
   background_theme: String
@@ -161,21 +172,33 @@ input BookFeedUpdateManyMutationInput {
   modified_date: String
 }
 
+input BookFeedUpdateOneRequiredInput {
+  create: BookFeedCreateInput
+  update: BookFeedUpdateDataInput
+  upsert: BookFeedUpsertNestedInput
+  connect: BookFeedWhereUniqueInput
+}
+
+input BookFeedUpsertNestedInput {
+  update: BookFeedUpdateDataInput!
+  create: BookFeedCreateInput!
+}
+
 input BookFeedWhereInput {
-  uniq_idx: String
-  uniq_idx_not: String
-  uniq_idx_in: [String!]
-  uniq_idx_not_in: [String!]
-  uniq_idx_lt: String
-  uniq_idx_lte: String
-  uniq_idx_gt: String
-  uniq_idx_gte: String
-  uniq_idx_contains: String
-  uniq_idx_not_contains: String
-  uniq_idx_starts_with: String
-  uniq_idx_not_starts_with: String
-  uniq_idx_ends_with: String
-  uniq_idx_not_ends_with: String
+  idx: String
+  idx_not: String
+  idx_in: [String!]
+  idx_not_in: [String!]
+  idx_lt: String
+  idx_lte: String
+  idx_gt: String
+  idx_gte: String
+  idx_contains: String
+  idx_not_contains: String
+  idx_starts_with: String
+  idx_not_starts_with: String
+  idx_ends_with: String
+  idx_not_ends_with: String
   book: BookWhereInput
   rating: Int
   rating_not: Int
@@ -251,7 +274,7 @@ input BookFeedWhereInput {
 }
 
 input BookFeedWhereUniqueInput {
-  uniq_idx: String
+  idx: String
 }
 
 enum BookOrderByInput {
@@ -402,7 +425,10 @@ type Mutation {
   deleteBookFeed(where: BookFeedWhereUniqueInput!): BookFeed
   deleteManyBookFeeds(where: BookFeedWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
+  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
+  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
+  deletePost(where: PostWhereUniqueInput!): Post
   deleteManyPosts(where: PostWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -427,7 +453,7 @@ type PageInfo {
 }
 
 type Post {
-  post_id: String!
+  id: String!
   user: User!
   bookfeed: BookFeed!
   like_count: Int!
@@ -441,11 +467,10 @@ type PostConnection {
 }
 
 input PostCreateInput {
-  post_id: String!
   user: UserCreateOneInput!
   bookfeed: BookFeedCreateOneInput!
-  like_count: Int!
-  liked: Boolean!
+  like_count: Int
+  liked: Boolean
 }
 
 type PostEdge {
@@ -454,14 +479,12 @@ type PostEdge {
 }
 
 enum PostOrderByInput {
-  post_id_ASC
-  post_id_DESC
+  id_ASC
+  id_DESC
   like_count_ASC
   like_count_DESC
   liked_ASC
   liked_DESC
-  id_ASC
-  id_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -469,7 +492,7 @@ enum PostOrderByInput {
 }
 
 type PostPreviousValues {
-  post_id: String!
+  id: String!
   like_count: Int!
   liked: Boolean!
 }
@@ -492,27 +515,33 @@ input PostSubscriptionWhereInput {
   NOT: [PostSubscriptionWhereInput!]
 }
 
+input PostUpdateInput {
+  user: UserUpdateOneRequiredInput
+  bookfeed: BookFeedUpdateOneRequiredInput
+  like_count: Int
+  liked: Boolean
+}
+
 input PostUpdateManyMutationInput {
-  post_id: String
   like_count: Int
   liked: Boolean
 }
 
 input PostWhereInput {
-  post_id: String
-  post_id_not: String
-  post_id_in: [String!]
-  post_id_not_in: [String!]
-  post_id_lt: String
-  post_id_lte: String
-  post_id_gt: String
-  post_id_gte: String
-  post_id_contains: String
-  post_id_not_contains: String
-  post_id_starts_with: String
-  post_id_not_starts_with: String
-  post_id_ends_with: String
-  post_id_not_ends_with: String
+  id: String
+  id_not: String
+  id_in: [String!]
+  id_not_in: [String!]
+  id_lt: String
+  id_lte: String
+  id_gt: String
+  id_gte: String
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_not_starts_with: String
+  id_ends_with: String
+  id_not_ends_with: String
   user: UserWhereInput
   bookfeed: BookFeedWhereInput
   like_count: Int
@@ -530,12 +559,17 @@ input PostWhereInput {
   NOT: [PostWhereInput!]
 }
 
+input PostWhereUniqueInput {
+  id: String
+}
+
 type Query {
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book]!
   booksConnection(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookConnection!
   bookFeed(where: BookFeedWhereUniqueInput!): BookFeed
   bookFeeds(where: BookFeedWhereInput, orderBy: BookFeedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookFeed]!
   bookFeedsConnection(where: BookFeedWhereInput, orderBy: BookFeedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookFeedConnection!
+  post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
@@ -611,9 +645,25 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdateDataInput {
+  u_idx: String
+  u_id: String
+}
+
 input UserUpdateManyMutationInput {
   u_idx: String
   u_id: String
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserWhereInput {

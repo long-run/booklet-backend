@@ -1,31 +1,22 @@
 import { GraphQLServer } from 'graphql-yoga'
 import { prisma } from './generated/prisma-client'
-import { Context } from './utils'
+import { Context } from './utils';
 
 const resolvers = {
   Query: {
     feed(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: true } })
-    },
-    drafts(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: false } })
+      return context.prisma.posts()
     },
     post(parent, { id }, context: Context) {
       return context.prisma.post({ id })
     },
   },
   Mutation: {
-    createDraft(parent, { title, content }, context: Context) {
-      return context.prisma.createPost({ title, content })
+    createDraft(parent, { user, bookfeed }, context: Context) {
+      return context.prisma.createPost({ user, bookfeed })
     },
     deletePost(parent, { id }, context: Context) {
       return context.prisma.deletePost({ id })
-    },
-    publish(parent, { id }, context: Context) {
-      return context.prisma.updatePost({
-        where: { id },
-        data: { published: true },
-      })
     },
   },
 }
