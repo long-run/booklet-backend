@@ -239,6 +239,8 @@ export type BookOrderByInput =
   | "updatedAt_DESC";
 
 export type PostOrderByInput =
+  | "post_id_ASC"
+  | "post_id_DESC"
   | "like_count_ASC"
   | "like_count_DESC"
   | "liked_ASC"
@@ -357,6 +359,7 @@ export interface BookFeedUpdateManyMutationInput {
 }
 
 export interface PostUpdateManyMutationInput {
+  post_id?: String;
   like_count?: Int;
   liked?: Boolean;
 }
@@ -490,6 +493,7 @@ export interface BookFeedUpdateInput {
 }
 
 export interface PostCreateInput {
+  post_id: String;
   user: UserCreateOneInput;
   bookfeed: BookFeedCreateOneInput;
   like_count: Int;
@@ -568,6 +572,20 @@ export type BookFeedWhereUniqueInput = AtLeastOne<{
 }>;
 
 export interface PostWhereInput {
+  post_id?: String;
+  post_id_not?: String;
+  post_id_in?: String[] | String;
+  post_id_not_in?: String[] | String;
+  post_id_lt?: String;
+  post_id_lte?: String;
+  post_id_gt?: String;
+  post_id_gte?: String;
+  post_id_contains?: String;
+  post_id_not_contains?: String;
+  post_id_starts_with?: String;
+  post_id_not_starts_with?: String;
+  post_id_ends_with?: String;
+  post_id_not_ends_with?: String;
   user?: UserWhereInput;
   bookfeed?: BookFeedWhereInput;
   like_count?: Int;
@@ -777,6 +795,7 @@ export interface BookEdgeSubscription
 }
 
 export interface PostPreviousValues {
+  post_id: String;
   like_count: Int;
   liked: Boolean;
 }
@@ -784,6 +803,7 @@ export interface PostPreviousValues {
 export interface PostPreviousValuesPromise
   extends Promise<PostPreviousValues>,
     Fragmentable {
+  post_id: () => Promise<String>;
   like_count: () => Promise<Int>;
   liked: () => Promise<Boolean>;
 }
@@ -791,6 +811,7 @@ export interface PostPreviousValuesPromise
 export interface PostPreviousValuesSubscription
   extends Promise<AsyncIterator<PostPreviousValues>>,
     Fragmentable {
+  post_id: () => Promise<AsyncIterator<String>>;
   like_count: () => Promise<AsyncIterator<Int>>;
   liked: () => Promise<AsyncIterator<Boolean>>;
 }
@@ -881,11 +902,13 @@ export interface BookSubscriptionPayloadSubscription
 }
 
 export interface Post {
+  post_id: String;
   like_count: Int;
   liked: Boolean;
 }
 
 export interface PostPromise extends Promise<Post>, Fragmentable {
+  post_id: () => Promise<String>;
   user: <T = UserPromise>() => T;
   bookfeed: <T = BookFeedPromise>() => T;
   like_count: () => Promise<Int>;
@@ -895,6 +918,7 @@ export interface PostPromise extends Promise<Post>, Fragmentable {
 export interface PostSubscription
   extends Promise<AsyncIterator<Post>>,
     Fragmentable {
+  post_id: () => Promise<AsyncIterator<String>>;
   user: <T = UserSubscription>() => T;
   bookfeed: <T = BookFeedSubscription>() => T;
   like_count: () => Promise<AsyncIterator<Int>>;

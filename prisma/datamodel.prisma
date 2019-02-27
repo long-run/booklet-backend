@@ -15,6 +15,7 @@ type BookFeed {
 }
 
 type Post {
+  post_id: String!
   user: User!
   bookfeed: BookFeed!
   like_count: Int!
