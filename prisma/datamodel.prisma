@@ -6,7 +6,7 @@ type User {
 type BookFeed {
   uniq_idx: String! @unique
   book: Book!
-  rating: Number!
+  rating: Int!
   status: FeedStatus!
   background_theme: String!
   note: String!
@@ -17,7 +17,7 @@ type BookFeed {
 type Post {
   user: User!
   bookfeed: BookFeed!
-  like_count: Number!
+  like_count: Int!
   liked: Boolean!
 }
 
