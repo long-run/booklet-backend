@@ -1,0 +1,79 @@
+mutation {
+  post1: createPost(
+    data: {
+      user: {
+        u_idx: '0'
+        u_id: 'tester_1'
+      }
+      bookfeed: {
+        idx: id
+        book: {
+          title: 'sample'
+          isbn: 'aaaaaaaa'
+          author: 'Leo Tolstoy'
+          book_cover: ''
+        }
+        rating: 0
+        status: want_to_read
+        background_theme: ''
+        note: ''
+        reg_date: '2019-02-27'
+        modified_date: '2019-02-27'
+      }
+    }
+  ) {
+    id
+  }
+
+  post2: createPost(
+    data: {
+      user: {
+        u_idx: '1'
+        u_id: 'tester_2'
+      }
+      bookfeed: {
+        idx: id
+        book: {
+          title: 'sample2'
+          isbn: 'bbbbbbbb'
+          author: 'Charles John Huffam Dickens '
+          book_cover: ''
+        }
+        rating: 0
+        status: want_to_read
+        background_theme: ''
+        note: ''
+        reg_date: '2019-02-27'
+        modified_date: '2019-02-27'
+      }
+    }
+  ) {
+    id
+  }
+
+  post3: createPost(
+    data: {
+      user: {
+        u_idx: '2'
+        u_id: 'tester_3'
+      }
+      bookfeed: {
+        idx: id
+        book: {
+          title: 'sample3'
+          isbn: 'cccccccc'
+          author: 'Jane Austen'
+          book_cover: ''
+        }
+        rating: 0
+        status: want_to_read
+        background_theme: ''
+        note: ''
+        reg_date: '2019-02-27'
+        modified_date: '2019-02-27'
+      }
+    }
+  ) {
+    id
+  }
+}
