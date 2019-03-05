@@ -1,27 +1,15 @@
-version: '3'
+version: "3.6"
+
 services:
-  prisma:
-    image: prismagraphql/prisma:1.27
-    restart: always
-    ports:
-    - "4466:4466"
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        databases:
-          default:
-            connector: mysql
-            host: mysql
-            port: 3306
-            user: root
-            password: prisma
-            migrations: true
-  mysql:
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: prisma
+  booklet_backend:
+    image: booklet/backend:latest
+    build:
+      context: .
+    command: yarn run watch
     volumes:
-      - mysql:/var/lib/mysql
-volumes:
-  mysql:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
