@@ -3,16 +3,15 @@ services:
   prisma:
     image: prismagraphql/prisma:1.27
     restart: always
-    network_mode: "host"
     ports:
-    - "4466:4466"
+    - 4466:4466
     environment:
       PRISMA_CONFIG: |
         port: 4466
         databases:
           default:
             connector: mysql
-            host: host.docker.internal
+            host: mysql
             port: 3306
             user: root
             password: prisma
@@ -20,7 +19,8 @@ services:
   mysql:
     image: mysql:5.7
     restart: always
-    # network_mode: "host"
+    ports:
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: prisma
     volumes:
