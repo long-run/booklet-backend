@@ -1,5 +1,21 @@
 
 mutation {
+  user1: createUser(
+    data: {
+      name: "kyungjun.park"
+    }
+  ) {
+    id
+  }
+
+  user2: createUser(
+    data: {
+      name: "alcion"
+    }
+  ) {
+    id
+  }
+  
   post1: createPost(
     data: {
       title: "Join us for GraphQL Conf 2019 in Berlin"

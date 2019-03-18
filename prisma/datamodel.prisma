@@ -1,3 +1,8 @@
+type User {
+  id: ID! @unique
+  name: String!
+}
+
 type Post {
   id: ID! @unique
   published: Boolean! @default(value: "false")
