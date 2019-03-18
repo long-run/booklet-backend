@@ -4,10 +4,18 @@ import { Context } from './utils'
 
 const resolvers = {
   Query: {
+    user(parent, { id }, context: Context) {
+      return context.prisma.user({ id })
+    },
     book(parent, { isbn }, context: Context) {
-      // return context.prisma.get({ where: { published: true } })
       return context.prisma.book({ isbn })
     },
+    bookFeed(parent, { id }, context: Context) {
+      return context.prisma.bookFeed({ id })
+    },
+    posts(parent, args, context: Context) {
+      return context.prisma.posts()
+    }
     // post(parent, { id }, context: Context) {
     //   return context.prisma.post({ id })
     // },

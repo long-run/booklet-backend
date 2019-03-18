@@ -4,7 +4,7 @@ mutation {
     data: {
       user: {
         create: {
-          name: "tester_2"
+          name: "tester_1"
         }
       }
       bookfeed: {
@@ -12,7 +12,51 @@ mutation {
           book: {
             create: {
               title: "sample book title 1"
-              isbn: "00011133"
+              isbn: "11111"
+              author: "anonymous"
+            }
+          }
+        }
+      }
+    }
+   ){
+     id
+   }
+   Post2: createPost(
+    data: {
+      user: {
+        create: {
+          name: "tester_2"
+        }
+      }
+      bookfeed: {
+        create: {
+          book: {
+            create: {
+              title: "sample book title 2"
+              isbn: "22222"
+              author: "anonymous"
+            }
+          }
+        }
+      }
+    }
+   ){
+     id
+   }
+   Post3: createPost(
+    data: {
+      user: {
+        create: {
+          name: "tester_3"
+        }
+      }
+      bookfeed: {
+        create: {
+          book: {
+            create: {
+              title: "sample book title 3"
+              isbn: "33333"
               author: "anonymous"
             }
           }

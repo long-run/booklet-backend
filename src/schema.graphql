@@ -1,8 +1,8 @@
 type Query {
-  # feed: [Post!]!
-  # drafts: [Post!]!
-  # post(id: ID!): Post
+  user(id: ID!): User
   book(isbn: String!): Book
+  bookFeed(id: ID!): BookFeed
+  posts:[Post]
 }
 
 type Mutation {
