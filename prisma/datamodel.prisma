@@ -1,6 +1,35 @@
+type User {
+  u_idx: String! @unique
+  u_id: String!
+}
+
+type BookFeed {
+  idx: String! @unique
+  book: Book!
+  rating: Int! @default(value: 0)
+  status: FeedStatus! @defualt(value: FeedStatus.WANT_TO_READ)
+  background_theme: String
+  note: String
+  reg_date: String
+  modified_date: String
+}
+
 type Post {
-  id: ID! @unique
-  published: Boolean! @default(value: "false")
+  user: User!
+  bookfeed: BookFeed
+  like_count: Int! @defualt(value: 0)
+  liked: Boolean! @defualt(value: false)
+}
+
+type Book {
   title: String!
-  content: String!
+  isbn: String!
+  author: String
+  book_cover: String
+}
+
+enum FeedStatus {
+  CURRENT_READING,
+  READ,
+  WANT_TO_READ
 }
