@@ -4,29 +4,27 @@ import { Context } from './utils'
 
 const resolvers = {
   Query: {
-    feed(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: true } })
+    book(parent, { isbn }, context: Context) {
+      // return context.prisma.get({ where: { published: true } })
+      return context.prisma.book({ isbn })
     },
-    drafts(parent, args, context: Context) {
-      return context.prisma.posts({ where: { published: false } })
-    },
-    post(parent, { id }, context: Context) {
-      return context.prisma.post({ id })
-    },
+    // post(parent, { id }, context: Context) {
+    //   return context.prisma.post({ id })
+    // },
   },
   Mutation: {
-    createDraft(parent, { title, content }, context: Context) {
-      return context.prisma.createPost({ title, content })
-    },
-    deletePost(parent, { id }, context: Context) {
-      return context.prisma.deletePost({ id })
-    },
-    publish(parent, { id }, context: Context) {
-      return context.prisma.updatePost({
-        where: { id },
-        data: { published: true },
-      })
-    },
+    // createDraft(parent, { title, content }, context: Context) {
+    //   return context.prisma.createPost({ title, content })
+    // },
+    // deletePost(parent, { id }, context: Context) {
+    //   return context.prisma.deletePost({ id })
+    // },
+    // publish(parent, { id }, context: Context) {
+    //   return context.prisma.updatePost({
+    //     where: { id },
+    //     data: { published: true },
+    //   })
+    // },
   },
 }
 

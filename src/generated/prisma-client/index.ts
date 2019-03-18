@@ -14,6 +14,9 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
   U[keyof U];
 
 export interface Exists {
+  book: (where?: BookWhereInput) => Promise<boolean>;
+  bookFeed: (where?: BookFeedWhereInput) => Promise<boolean>;
+  post: (where?: PostWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -36,6 +39,75 @@ export interface Prisma {
    * Queries
    */
 
+  book: (where: BookWhereUniqueInput) => BookPromise;
+  books: (
+    args?: {
+      where?: BookWhereInput;
+      orderBy?: BookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Book>;
+  booksConnection: (
+    args?: {
+      where?: BookWhereInput;
+      orderBy?: BookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => BookConnectionPromise;
+  bookFeed: (where: BookFeedWhereUniqueInput) => BookFeedPromise;
+  bookFeeds: (
+    args?: {
+      where?: BookFeedWhereInput;
+      orderBy?: BookFeedOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<BookFeed>;
+  bookFeedsConnection: (
+    args?: {
+      where?: BookFeedWhereInput;
+      orderBy?: BookFeedOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => BookFeedConnectionPromise;
+  post: (where: PostWhereUniqueInput) => PostPromise;
+  posts: (
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<Post>;
+  postsConnection: (
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => PostConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserPromise;
   users: (
     args?: {
@@ -65,6 +137,54 @@ export interface Prisma {
    * Mutations
    */
 
+  createBook: (data: BookCreateInput) => BookPromise;
+  updateBook: (
+    args: { data: BookUpdateInput; where: BookWhereUniqueInput }
+  ) => BookPromise;
+  updateManyBooks: (
+    args: { data: BookUpdateManyMutationInput; where?: BookWhereInput }
+  ) => BatchPayloadPromise;
+  upsertBook: (
+    args: {
+      where: BookWhereUniqueInput;
+      create: BookCreateInput;
+      update: BookUpdateInput;
+    }
+  ) => BookPromise;
+  deleteBook: (where: BookWhereUniqueInput) => BookPromise;
+  deleteManyBooks: (where?: BookWhereInput) => BatchPayloadPromise;
+  createBookFeed: (data: BookFeedCreateInput) => BookFeedPromise;
+  updateBookFeed: (
+    args: { data: BookFeedUpdateInput; where: BookFeedWhereUniqueInput }
+  ) => BookFeedPromise;
+  updateManyBookFeeds: (
+    args: { data: BookFeedUpdateManyMutationInput; where?: BookFeedWhereInput }
+  ) => BatchPayloadPromise;
+  upsertBookFeed: (
+    args: {
+      where: BookFeedWhereUniqueInput;
+      create: BookFeedCreateInput;
+      update: BookFeedUpdateInput;
+    }
+  ) => BookFeedPromise;
+  deleteBookFeed: (where: BookFeedWhereUniqueInput) => BookFeedPromise;
+  deleteManyBookFeeds: (where?: BookFeedWhereInput) => BatchPayloadPromise;
+  createPost: (data: PostCreateInput) => PostPromise;
+  updatePost: (
+    args: { data: PostUpdateInput; where: PostWhereUniqueInput }
+  ) => PostPromise;
+  updateManyPosts: (
+    args: { data: PostUpdateManyMutationInput; where?: PostWhereInput }
+  ) => BatchPayloadPromise;
+  upsertPost: (
+    args: {
+      where: PostWhereUniqueInput;
+      create: PostCreateInput;
+      update: PostUpdateInput;
+    }
+  ) => PostPromise;
+  deletePost: (where: PostWhereUniqueInput) => PostPromise;
+  deleteManyPosts: (where?: PostWhereInput) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (
     args: { data: UserUpdateInput; where: UserWhereUniqueInput }
@@ -90,6 +210,15 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  book: (
+    where?: BookSubscriptionWhereInput
+  ) => BookSubscriptionPayloadSubscription;
+  bookFeed: (
+    where?: BookFeedSubscriptionWhereInput
+  ) => BookFeedSubscriptionPayloadSubscription;
+  post: (
+    where?: PostSubscriptionWhereInput
+  ) => PostSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -103,13 +232,61 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type UserOrderByInput =
-  | "u_idx_ASC"
-  | "u_idx_DESC"
-  | "u_id_ASC"
-  | "u_id_DESC"
+export type FeedStatus = "CURRENT_READING" | "READ" | "WANT_TO_READ";
+
+export type BookFeedOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "rating_ASC"
+  | "rating_DESC"
+  | "status_ASC"
+  | "status_DESC"
+  | "background_theme_ASC"
+  | "background_theme_DESC"
+  | "note_ASC"
+  | "note_DESC"
+  | "reg_date_ASC"
+  | "reg_date_DESC"
+  | "modified_date_ASC"
+  | "modified_date_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type BookOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "title_ASC"
+  | "title_DESC"
+  | "isbn_ASC"
+  | "isbn_DESC"
+  | "author_ASC"
+  | "author_DESC"
+  | "book_cover_ASC"
+  | "book_cover_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type PostOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "like_count_ASC"
+  | "like_count_DESC"
+  | "liked_ASC"
+  | "liked_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
+export type UserOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -117,47 +294,415 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export interface UserCreateInput {
-  u_idx: Int;
-  u_id: String;
+export interface BookUpdateManyMutationInput {
+  title?: String;
+  isbn?: String;
+  author?: String;
+  book_cover?: String;
+}
+
+export type BookWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  isbn?: String;
+}>;
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface BookUpdateOneRequiredInput {
+  create?: BookCreateInput;
+  update?: BookUpdateDataInput;
+  upsert?: BookUpsertNestedInput;
+  connect?: BookWhereUniqueInput;
+}
+
+export interface UserUpdateDataInput {
+  name?: String;
+}
+
+export interface BookCreateOneInput {
+  create?: BookCreateInput;
+  connect?: BookWhereUniqueInput;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface PostSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: PostWhereInput;
+  AND?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
+  OR?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
+  NOT?: PostSubscriptionWhereInput[] | PostSubscriptionWhereInput;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface BookFeedSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: BookFeedWhereInput;
+  AND?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
+  OR?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
+  NOT?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
+}
+
+export interface PostUpdateInput {
+  user?: UserUpdateOneRequiredInput;
+  bookfeed?: BookFeedUpdateOneRequiredInput;
+  like_count?: Int;
+  liked?: Boolean;
+}
+
+export interface BookFeedWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  book?: BookWhereInput;
+  rating?: Int;
+  rating_not?: Int;
+  rating_in?: Int[] | Int;
+  rating_not_in?: Int[] | Int;
+  rating_lt?: Int;
+  rating_lte?: Int;
+  rating_gt?: Int;
+  rating_gte?: Int;
+  status?: FeedStatus;
+  status_not?: FeedStatus;
+  status_in?: FeedStatus[] | FeedStatus;
+  status_not_in?: FeedStatus[] | FeedStatus;
+  background_theme?: String;
+  background_theme_not?: String;
+  background_theme_in?: String[] | String;
+  background_theme_not_in?: String[] | String;
+  background_theme_lt?: String;
+  background_theme_lte?: String;
+  background_theme_gt?: String;
+  background_theme_gte?: String;
+  background_theme_contains?: String;
+  background_theme_not_contains?: String;
+  background_theme_starts_with?: String;
+  background_theme_not_starts_with?: String;
+  background_theme_ends_with?: String;
+  background_theme_not_ends_with?: String;
+  note?: String;
+  note_not?: String;
+  note_in?: String[] | String;
+  note_not_in?: String[] | String;
+  note_lt?: String;
+  note_lte?: String;
+  note_gt?: String;
+  note_gte?: String;
+  note_contains?: String;
+  note_not_contains?: String;
+  note_starts_with?: String;
+  note_not_starts_with?: String;
+  note_ends_with?: String;
+  note_not_ends_with?: String;
+  reg_date?: String;
+  reg_date_not?: String;
+  reg_date_in?: String[] | String;
+  reg_date_not_in?: String[] | String;
+  reg_date_lt?: String;
+  reg_date_lte?: String;
+  reg_date_gt?: String;
+  reg_date_gte?: String;
+  reg_date_contains?: String;
+  reg_date_not_contains?: String;
+  reg_date_starts_with?: String;
+  reg_date_not_starts_with?: String;
+  reg_date_ends_with?: String;
+  reg_date_not_ends_with?: String;
+  modified_date?: String;
+  modified_date_not?: String;
+  modified_date_in?: String[] | String;
+  modified_date_not_in?: String[] | String;
+  modified_date_lt?: String;
+  modified_date_lte?: String;
+  modified_date_gt?: String;
+  modified_date_gte?: String;
+  modified_date_contains?: String;
+  modified_date_not_contains?: String;
+  modified_date_starts_with?: String;
+  modified_date_not_starts_with?: String;
+  modified_date_ends_with?: String;
+  modified_date_not_ends_with?: String;
+  AND?: BookFeedWhereInput[] | BookFeedWhereInput;
+  OR?: BookFeedWhereInput[] | BookFeedWhereInput;
+  NOT?: BookFeedWhereInput[] | BookFeedWhereInput;
+}
+
+export interface BookFeedCreateOneInput {
+  create?: BookFeedCreateInput;
+  connect?: BookFeedWhereUniqueInput;
 }
 
 export interface UserUpdateInput {
-  u_idx?: Int;
-  u_id?: String;
+  name?: String;
+}
+
+export interface UserCreateInput {
+  name: String;
+}
+
+export interface BookFeedUpsertNestedInput {
+  update: BookFeedUpdateDataInput;
+  create: BookFeedCreateInput;
+}
+
+export interface UserCreateOneInput {
+  create?: UserCreateInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface BookFeedUpdateDataInput {
+  book?: BookUpdateOneRequiredInput;
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
+}
+
+export interface PostWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  user?: UserWhereInput;
+  bookfeed?: BookFeedWhereInput;
+  like_count?: Int;
+  like_count_not?: Int;
+  like_count_in?: Int[] | Int;
+  like_count_not_in?: Int[] | Int;
+  like_count_lt?: Int;
+  like_count_lte?: Int;
+  like_count_gt?: Int;
+  like_count_gte?: Int;
+  liked?: Boolean;
+  liked_not?: Boolean;
+  AND?: PostWhereInput[] | PostWhereInput;
+  OR?: PostWhereInput[] | PostWhereInput;
+  NOT?: PostWhereInput[] | PostWhereInput;
+}
+
+export interface BookWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  title?: String;
+  title_not?: String;
+  title_in?: String[] | String;
+  title_not_in?: String[] | String;
+  title_lt?: String;
+  title_lte?: String;
+  title_gt?: String;
+  title_gte?: String;
+  title_contains?: String;
+  title_not_contains?: String;
+  title_starts_with?: String;
+  title_not_starts_with?: String;
+  title_ends_with?: String;
+  title_not_ends_with?: String;
+  isbn?: String;
+  isbn_not?: String;
+  isbn_in?: String[] | String;
+  isbn_not_in?: String[] | String;
+  isbn_lt?: String;
+  isbn_lte?: String;
+  isbn_gt?: String;
+  isbn_gte?: String;
+  isbn_contains?: String;
+  isbn_not_contains?: String;
+  isbn_starts_with?: String;
+  isbn_not_starts_with?: String;
+  isbn_ends_with?: String;
+  isbn_not_ends_with?: String;
+  author?: String;
+  author_not?: String;
+  author_in?: String[] | String;
+  author_not_in?: String[] | String;
+  author_lt?: String;
+  author_lte?: String;
+  author_gt?: String;
+  author_gte?: String;
+  author_contains?: String;
+  author_not_contains?: String;
+  author_starts_with?: String;
+  author_not_starts_with?: String;
+  author_ends_with?: String;
+  author_not_ends_with?: String;
+  book_cover?: String;
+  book_cover_not?: String;
+  book_cover_in?: String[] | String;
+  book_cover_not_in?: String[] | String;
+  book_cover_lt?: String;
+  book_cover_lte?: String;
+  book_cover_gt?: String;
+  book_cover_gte?: String;
+  book_cover_contains?: String;
+  book_cover_not_contains?: String;
+  book_cover_starts_with?: String;
+  book_cover_not_starts_with?: String;
+  book_cover_ends_with?: String;
+  book_cover_not_ends_with?: String;
+  AND?: BookWhereInput[] | BookWhereInput;
+  OR?: BookWhereInput[] | BookWhereInput;
+  NOT?: BookWhereInput[] | BookWhereInput;
+}
+
+export interface BookCreateInput {
+  title: String;
+  isbn: String;
+  author?: String;
+  book_cover?: String;
+}
+
+export type BookFeedWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface BookUpdateInput {
+  title?: String;
+  isbn?: String;
+  author?: String;
+  book_cover?: String;
 }
 
 export interface UserUpdateManyMutationInput {
-  u_idx?: Int;
-  u_id?: String;
+  name?: String;
+}
+
+export interface PostCreateInput {
+  user: UserCreateOneInput;
+  bookfeed: BookFeedCreateOneInput;
+  like_count?: Int;
+  liked?: Boolean;
+}
+
+export type PostWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface BookFeedUpdateManyMutationInput {
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
 }
 
 export interface UserWhereInput {
-  u_idx?: Int;
-  u_idx_not?: Int;
-  u_idx_in?: Int[] | Int;
-  u_idx_not_in?: Int[] | Int;
-  u_idx_lt?: Int;
-  u_idx_lte?: Int;
-  u_idx_gt?: Int;
-  u_idx_gte?: Int;
-  u_id?: String;
-  u_id_not?: String;
-  u_id_in?: String[] | String;
-  u_id_not_in?: String[] | String;
-  u_id_lt?: String;
-  u_id_lte?: String;
-  u_id_gt?: String;
-  u_id_gte?: String;
-  u_id_contains?: String;
-  u_id_not_contains?: String;
-  u_id_starts_with?: String;
-  u_id_not_starts_with?: String;
-  u_id_ends_with?: String;
-  u_id_not_ends_with?: String;
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  name?: String;
+  name_not?: String;
+  name_in?: String[] | String;
+  name_not_in?: String[] | String;
+  name_lt?: String;
+  name_lte?: String;
+  name_gt?: String;
+  name_gte?: String;
+  name_contains?: String;
+  name_not_contains?: String;
+  name_starts_with?: String;
+  name_not_starts_with?: String;
+  name_ends_with?: String;
+  name_not_ends_with?: String;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
+}
+
+export interface BookFeedUpdateInput {
+  book?: BookUpdateOneRequiredInput;
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
+}
+
+export interface BookUpdateDataInput {
+  title?: String;
+  isbn?: String;
+  author?: String;
+  book_cover?: String;
+}
+
+export interface BookFeedCreateInput {
+  book: BookCreateOneInput;
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
+}
+
+export interface BookUpsertNestedInput {
+  update: BookUpdateDataInput;
+  create: BookCreateInput;
 }
 
 export interface UserSubscriptionWhereInput {
@@ -171,63 +716,138 @@ export interface UserSubscriptionWhereInput {
   NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  u_idx: Int;
-}>;
+export interface BookFeedUpdateOneRequiredInput {
+  create?: BookFeedCreateInput;
+  update?: BookFeedUpdateDataInput;
+  upsert?: BookFeedUpsertNestedInput;
+  connect?: BookFeedWhereUniqueInput;
+}
+
+export interface PostUpdateManyMutationInput {
+  like_count?: Int;
+  liked?: Boolean;
+}
+
+export interface BookSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: BookWhereInput;
+  AND?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
+  OR?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
+  NOT?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
+}
 
 export interface NodeNode {
   id: ID_Output;
 }
 
 export interface UserPreviousValues {
-  u_idx: Int;
-  u_id: String;
+  id: ID_Output;
+  name: String;
 }
 
 export interface UserPreviousValuesPromise
   extends Promise<UserPreviousValues>,
     Fragmentable {
-  u_idx: () => Promise<Int>;
-  u_id: () => Promise<String>;
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
   extends Promise<AsyncIterator<UserPreviousValues>>,
     Fragmentable {
-  u_idx: () => Promise<AsyncIterator<Int>>;
-  u_id: () => Promise<AsyncIterator<String>>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
 }
 
-export interface BatchPayload {
-  count: Long;
+export interface BookFeedConnection {
+  pageInfo: PageInfo;
+  edges: BookFeedEdge[];
 }
 
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
+export interface BookFeedConnectionPromise
+  extends Promise<BookFeedConnection>,
     Fragmentable {
-  count: () => Promise<Long>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<BookFeedEdge>>() => T;
+  aggregate: <T = AggregateBookFeedPromise>() => T;
 }
 
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
+export interface BookFeedConnectionSubscription
+  extends Promise<AsyncIterator<BookFeedConnection>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BookFeedEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBookFeedSubscription>() => T;
 }
 
-export interface AggregateUser {
-  count: Int;
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
 }
 
-export interface AggregateUserPromise
-  extends Promise<AggregateUser>,
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
     Fragmentable {
-  count: () => Promise<Int>;
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface AggregateUserSubscription
-  extends Promise<AsyncIterator<AggregateUser>>,
+export interface BookFeedEdge {
+  node: BookFeed;
+  cursor: String;
+}
+
+export interface BookFeedEdgePromise
+  extends Promise<BookFeedEdge>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  node: <T = BookFeedPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface BookFeedEdgeSubscription
+  extends Promise<AsyncIterator<BookFeedEdge>>,
+    Fragmentable {
+  node: <T = BookFeedSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostSubscriptionPayload {
+  mutation: MutationType;
+  node: Post;
+  updatedFields: String[];
+  previousValues: PostPreviousValues;
+}
+
+export interface PostSubscriptionPayloadPromise
+  extends Promise<PostSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = PostPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = PostPreviousValuesPromise>() => T;
+}
+
+export interface PostSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<PostSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = PostSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = PostPreviousValuesSubscription>() => T;
 }
 
 export interface UserSubscriptionPayload {
@@ -255,21 +875,226 @@ export interface UserSubscriptionPayloadSubscription
   previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface BookEdge {
+  node: Book;
+  cursor: String;
+}
+
+export interface BookEdgePromise extends Promise<BookEdge>, Fragmentable {
+  node: <T = BookPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface BookEdgeSubscription
+  extends Promise<AsyncIterator<BookEdge>>,
+    Fragmentable {
+  node: <T = BookSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BookConnection {
+  pageInfo: PageInfo;
+  edges: BookEdge[];
+}
+
+export interface BookConnectionPromise
+  extends Promise<BookConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<BookEdge>>() => T;
+  aggregate: <T = AggregateBookPromise>() => T;
+}
+
+export interface BookConnectionSubscription
+  extends Promise<AsyncIterator<BookConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<BookEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateBookSubscription>() => T;
+}
+
+export interface Book {
+  id: ID_Output;
+  title: String;
+  isbn: String;
+  author?: String;
+  book_cover?: String;
+}
+
+export interface BookPromise extends Promise<Book>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  isbn: () => Promise<String>;
+  author: () => Promise<String>;
+  book_cover: () => Promise<String>;
+}
+
+export interface BookSubscription
+  extends Promise<AsyncIterator<Book>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  isbn: () => Promise<AsyncIterator<String>>;
+  author: () => Promise<AsyncIterator<String>>;
+  book_cover: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostPreviousValues {
+  id: ID_Output;
+  like_count: Int;
+  liked: Boolean;
+}
+
+export interface PostPreviousValuesPromise
+  extends Promise<PostPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  like_count: () => Promise<Int>;
+  liked: () => Promise<Boolean>;
+}
+
+export interface PostPreviousValuesSubscription
+  extends Promise<AsyncIterator<PostPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  like_count: () => Promise<AsyncIterator<Int>>;
+  liked: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface PostEdge {
+  node: Post;
+  cursor: String;
+}
+
+export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
+  node: <T = PostPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PostEdgeSubscription
+  extends Promise<AsyncIterator<PostEdge>>,
+    Fragmentable {
+  node: <T = PostSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BookSubscriptionPayload {
+  mutation: MutationType;
+  node: Book;
+  updatedFields: String[];
+  previousValues: BookPreviousValues;
+}
+
+export interface BookSubscriptionPayloadPromise
+  extends Promise<BookSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = BookPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = BookPreviousValuesPromise>() => T;
+}
+
+export interface BookSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<BookSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = BookSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = BookPreviousValuesSubscription>() => T;
+}
+
 export interface User {
-  u_idx: Int;
-  u_id: String;
+  id: ID_Output;
+  name: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
-  u_idx: () => Promise<Int>;
-  u_id: () => Promise<String>;
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
 }
 
 export interface UserSubscription
   extends Promise<AsyncIterator<User>>,
     Fragmentable {
-  u_idx: () => Promise<AsyncIterator<Int>>;
-  u_id: () => Promise<AsyncIterator<String>>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BookPreviousValues {
+  id: ID_Output;
+  title: String;
+  isbn: String;
+  author?: String;
+  book_cover?: String;
+}
+
+export interface BookPreviousValuesPromise
+  extends Promise<BookPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  isbn: () => Promise<String>;
+  author: () => Promise<String>;
+  book_cover: () => Promise<String>;
+}
+
+export interface BookPreviousValuesSubscription
+  extends Promise<AsyncIterator<BookPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  isbn: () => Promise<AsyncIterator<String>>;
+  author: () => Promise<AsyncIterator<String>>;
+  book_cover: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateBookFeed {
+  count: Int;
+}
+
+export interface AggregateBookFeedPromise
+  extends Promise<AggregateBookFeed>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateBookFeedSubscription
+  extends Promise<AsyncIterator<AggregateBookFeed>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface UserConnection {
@@ -293,45 +1118,203 @@ export interface UserConnectionSubscription
   aggregate: <T = AggregateUserSubscription>() => T;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
+export interface AggregateBook {
+  count: Int;
 }
 
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
+export interface AggregateBookPromise
+  extends Promise<AggregateBook>,
     Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
+  count: () => Promise<Int>;
 }
 
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
+export interface AggregateBookSubscription
+  extends Promise<AsyncIterator<AggregateBook>>,
     Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  count: () => Promise<AsyncIterator<Int>>;
 }
+
+export interface BookFeedPreviousValues {
+  id: ID_Output;
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
+}
+
+export interface BookFeedPreviousValuesPromise
+  extends Promise<BookFeedPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  rating: () => Promise<Int>;
+  status: () => Promise<FeedStatus>;
+  background_theme: () => Promise<String>;
+  note: () => Promise<String>;
+  reg_date: () => Promise<String>;
+  modified_date: () => Promise<String>;
+}
+
+export interface BookFeedPreviousValuesSubscription
+  extends Promise<AsyncIterator<BookFeedPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  rating: () => Promise<AsyncIterator<Int>>;
+  status: () => Promise<AsyncIterator<FeedStatus>>;
+  background_theme: () => Promise<AsyncIterator<String>>;
+  note: () => Promise<AsyncIterator<String>>;
+  reg_date: () => Promise<AsyncIterator<String>>;
+  modified_date: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BookFeedSubscriptionPayload {
+  mutation: MutationType;
+  node: BookFeed;
+  updatedFields: String[];
+  previousValues: BookFeedPreviousValues;
+}
+
+export interface BookFeedSubscriptionPayloadPromise
+  extends Promise<BookFeedSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = BookFeedPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = BookFeedPreviousValuesPromise>() => T;
+}
+
+export interface BookFeedSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<BookFeedSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = BookFeedSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = BookFeedPreviousValuesSubscription>() => T;
+}
+
+export interface BookFeed {
+  id: ID_Output;
+  rating?: Int;
+  status?: FeedStatus;
+  background_theme?: String;
+  note?: String;
+  reg_date?: String;
+  modified_date?: String;
+}
+
+export interface BookFeedPromise extends Promise<BookFeed>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  book: <T = BookPromise>() => T;
+  rating: () => Promise<Int>;
+  status: () => Promise<FeedStatus>;
+  background_theme: () => Promise<String>;
+  note: () => Promise<String>;
+  reg_date: () => Promise<String>;
+  modified_date: () => Promise<String>;
+}
+
+export interface BookFeedSubscription
+  extends Promise<AsyncIterator<BookFeed>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  book: <T = BookSubscription>() => T;
+  rating: () => Promise<AsyncIterator<Int>>;
+  status: () => Promise<AsyncIterator<FeedStatus>>;
+  background_theme: () => Promise<AsyncIterator<String>>;
+  note: () => Promise<AsyncIterator<String>>;
+  reg_date: () => Promise<AsyncIterator<String>>;
+  modified_date: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateUser {
+  count: Int;
+}
+
+export interface AggregateUserPromise
+  extends Promise<AggregateUser>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSubscription
+  extends Promise<AsyncIterator<AggregateUser>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface Post {
+  id: ID_Output;
+  like_count: Int;
+  liked: Boolean;
+}
+
+export interface PostPromise extends Promise<Post>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  bookfeed: <T = BookFeedPromise>() => T;
+  like_count: () => Promise<Int>;
+  liked: () => Promise<Boolean>;
+}
+
+export interface PostSubscription
+  extends Promise<AsyncIterator<Post>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  bookfeed: <T = BookFeedSubscription>() => T;
+  like_count: () => Promise<AsyncIterator<Int>>;
+  liked: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface PostConnection {
+  pageInfo: PageInfo;
+  edges: PostEdge[];
+}
+
+export interface PostConnectionPromise
+  extends Promise<PostConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PostEdge>>() => T;
+  aggregate: <T = AggregatePostPromise>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+*/
+export type Int = number;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
+export type Long = string;
 
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
@@ -344,18 +1327,6 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 */
 export type String = string;
 
-export type Long = string;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
-*/
-export type Int = number;
-
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
-
 /**
  * Model Metadata
  */
@@ -363,6 +1334,18 @@ export type Boolean = boolean;
 export const models: Model[] = [
   {
     name: "User",
+    embedded: false
+  },
+  {
+    name: "Book",
+    embedded: false
+  },
+  {
+    name: "BookFeed",
+    embedded: false
+  },
+  {
+    name: "Post",
     embedded: false
   },
   {
