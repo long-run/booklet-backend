@@ -26,9 +26,18 @@ const resolvers = {
     }
   },
   Mutation: {
-    // createDraft(parent, { title, content }, context: Context) {
-    //   return context.prisma.createPost({ title, content })
-    // },
+    createBook(parent, { title, isbn, author }, context: Context) {
+      return context.prisma.createBook({ title, isbn, author })
+    },
+    deleteBook(parent, { isbn }, context: Context) {
+      return context.prisma.deleteBook({ isbn })
+    },
+    createUser(parent, { name }, context: Context) {
+      return context.prisma.createUser({ name })
+    },
+    deleteUser(parent, { id }, context: Context) {
+      return context.prisma.deleteUser({ id })
+    }
     // deletePost(parent, { id }, context: Context) {
     //   return context.prisma.deletePost({ id })
     // },
