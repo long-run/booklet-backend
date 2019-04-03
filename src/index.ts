@@ -15,10 +15,15 @@ const resolvers = {
     },
     posts(parent, args, context: Context) {
       return context.prisma.posts()
+    },
+    post(parent, {id}, context: Context) {
+      return context.prisma.post({ id })
     }
-    // post(parent, { id }, context: Context) {
-    //   return context.prisma.post({ id })
-    // },
+  },
+  Post: {
+    user(parent, args, context: Context) {
+      return context.prisma.post({ id: parent.id }).user()
+    }
   },
   Mutation: {
     // createDraft(parent, { title, content }, context: Context) {
