@@ -6,9 +6,10 @@ type Query {
 }
 
 type Mutation {
-  createDraft(title: String!, content: String): Post
-  deletePost(id: ID!): Post
-  publish(id: ID!): Post
+  createBook(title: String, isbn: String, author: String): Book
+  deleteBook(isbn: String): Book
+  createUser(name: String): User
+  createUser(id: String): User
 }
 
 type User {
