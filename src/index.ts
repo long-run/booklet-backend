@@ -23,6 +23,14 @@ const resolvers = {
   Post: {
     user(parent, args, context: Context) {
       return context.prisma.post({ id: parent.id }).user()
+    },
+    bookfeed(parent, args, context: Context) {
+      return context.prisma.post({ id: parent.id }).bookfeed()
+    },
+  },
+  BookFeed: {
+    book(parent, args, context: Context) {
+      return context.prisma.bookFeed({ id: parent.id }).book()
     }
   },
   Mutation: {
