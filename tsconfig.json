@@ -1,14 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "preserve",
+    "jsxFactory": "jsx",
+    "lib": ["dom", "es2017"],
+    "module": "esnext",
     "moduleResolution": "node",
-    "module": "commonjs",
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "rootDir": "src",
-    "outDir": "dist",
-    "lib": [
-      "esnext", "dom"
-    ],
-    "ignore": ["node_modules/**"]
+    "strict": true,
+    "target": "esnext"
   }
 }
