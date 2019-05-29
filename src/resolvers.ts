@@ -1,9 +1,11 @@
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
+import { IResolvers } from 'graphql-tools';
 import { generateToken } from './authorizer';
 
+// @ts-ignore
 export default {
   Mutation: {
-    register: async (parent, { username, email, password }, ctx, info) => {
+    register: async (_, { username, email, password }, ctx) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await ctx.prisma.createUser({
         username,
@@ -13,7 +15,7 @@ export default {
       return user;
     },
 
-    login: async (parent, { username, password }, ctx, info) => {
+    login: async (_, { username, password }, ctx) => {
       const user = await ctx.prisma.user({ username });
 
       if (!user) {
@@ -34,7 +36,7 @@ export default {
     }
   },
   Query: {
-    search: async (parent, { keyword }, ctx, info) => {
+    search: async (_, { keyword }, ctx) => {
       return ctx.prisma.books({
         where: {
           OR: [
@@ -45,4 +47,4 @@ export default {
       });
     }
   }
-};
+} as IResolvers;

@@ -25,4 +25,5 @@ server.start({
       optionsSuccessStatus: 204,
     }
   },
-  () => console.log('Server is running on http://localhost:4000'))
+  () => console.log('Server is running on http://localhost:4000'),
+);

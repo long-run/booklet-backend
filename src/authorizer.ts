@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export const generateToken = user => {
+export const generateToken = (user: any) => {
   return jwt.sign(
     {
       id: user.id,
@@ -12,7 +12,7 @@ export const generateToken = user => {
   );
 };
 
-export const getUser = token => {
+export const getUser = (token: any) => {
   try {
     if (token) {
       return jwt.verify(token, 'secret')
