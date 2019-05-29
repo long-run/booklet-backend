@@ -3,6 +3,18 @@ type User {
   username: String!
 }
 
+type Book {
+  id: ID! @unique
+  title: String!
+  isbn: String! @unique
+  author: String @default(value: "")
+  cover: String @default(value: "")
+  publisher: String @default(value: "")
+  description: String @default(value: "")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type Query {
   currentUser: User!
   search(keyword: String!): [Book!]!
