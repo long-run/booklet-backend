@@ -6,15 +6,15 @@ export const typeDefs = /* GraphQL */ `type AggregateBook {
   count: Int!
 }
 
-type AggregateBookFeed {
-  count: Int!
-}
-
 type AggregatePost {
   count: Int!
 }
 
 type AggregateUser {
+  count: Int!
+}
+
+type AggregateUserBook {
   count: Int!
 }
 
@@ -27,7 +27,11 @@ type Book {
   title: String!
   isbn: String!
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type BookConnection {
@@ -40,7 +44,9 @@ input BookCreateInput {
   title: String!
   isbn: String!
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
 }
 
 input BookCreateOneInput {
@@ -53,226 +59,6 @@ type BookEdge {
   cursor: String!
 }
 
-type BookFeed {
-  id: ID!
-  book: Book!
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-type BookFeedConnection {
-  pageInfo: PageInfo!
-  edges: [BookFeedEdge]!
-  aggregate: AggregateBookFeed!
-}
-
-input BookFeedCreateInput {
-  book: BookCreateOneInput!
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-input BookFeedCreateOneInput {
-  create: BookFeedCreateInput
-  connect: BookFeedWhereUniqueInput
-}
-
-type BookFeedEdge {
-  node: BookFeed!
-  cursor: String!
-}
-
-enum BookFeedOrderByInput {
-  id_ASC
-  id_DESC
-  rating_ASC
-  rating_DESC
-  status_ASC
-  status_DESC
-  background_theme_ASC
-  background_theme_DESC
-  note_ASC
-  note_DESC
-  reg_date_ASC
-  reg_date_DESC
-  modified_date_ASC
-  modified_date_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type BookFeedPreviousValues {
-  id: ID!
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-type BookFeedSubscriptionPayload {
-  mutation: MutationType!
-  node: BookFeed
-  updatedFields: [String!]
-  previousValues: BookFeedPreviousValues
-}
-
-input BookFeedSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: BookFeedWhereInput
-  AND: [BookFeedSubscriptionWhereInput!]
-  OR: [BookFeedSubscriptionWhereInput!]
-  NOT: [BookFeedSubscriptionWhereInput!]
-}
-
-input BookFeedUpdateDataInput {
-  book: BookUpdateOneRequiredInput
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-input BookFeedUpdateInput {
-  book: BookUpdateOneRequiredInput
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-input BookFeedUpdateManyMutationInput {
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
-}
-
-input BookFeedUpdateOneRequiredInput {
-  create: BookFeedCreateInput
-  update: BookFeedUpdateDataInput
-  upsert: BookFeedUpsertNestedInput
-  connect: BookFeedWhereUniqueInput
-}
-
-input BookFeedUpsertNestedInput {
-  update: BookFeedUpdateDataInput!
-  create: BookFeedCreateInput!
-}
-
-input BookFeedWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  book: BookWhereInput
-  rating: Int
-  rating_not: Int
-  rating_in: [Int!]
-  rating_not_in: [Int!]
-  rating_lt: Int
-  rating_lte: Int
-  rating_gt: Int
-  rating_gte: Int
-  status: FeedStatus
-  status_not: FeedStatus
-  status_in: [FeedStatus!]
-  status_not_in: [FeedStatus!]
-  background_theme: String
-  background_theme_not: String
-  background_theme_in: [String!]
-  background_theme_not_in: [String!]
-  background_theme_lt: String
-  background_theme_lte: String
-  background_theme_gt: String
-  background_theme_gte: String
-  background_theme_contains: String
-  background_theme_not_contains: String
-  background_theme_starts_with: String
-  background_theme_not_starts_with: String
-  background_theme_ends_with: String
-  background_theme_not_ends_with: String
-  note: String
-  note_not: String
-  note_in: [String!]
-  note_not_in: [String!]
-  note_lt: String
-  note_lte: String
-  note_gt: String
-  note_gte: String
-  note_contains: String
-  note_not_contains: String
-  note_starts_with: String
-  note_not_starts_with: String
-  note_ends_with: String
-  note_not_ends_with: String
-  reg_date: String
-  reg_date_not: String
-  reg_date_in: [String!]
-  reg_date_not_in: [String!]
-  reg_date_lt: String
-  reg_date_lte: String
-  reg_date_gt: String
-  reg_date_gte: String
-  reg_date_contains: String
-  reg_date_not_contains: String
-  reg_date_starts_with: String
-  reg_date_not_starts_with: String
-  reg_date_ends_with: String
-  reg_date_not_ends_with: String
-  modified_date: String
-  modified_date_not: String
-  modified_date_in: [String!]
-  modified_date_not_in: [String!]
-  modified_date_lt: String
-  modified_date_lte: String
-  modified_date_gt: String
-  modified_date_gte: String
-  modified_date_contains: String
-  modified_date_not_contains: String
-  modified_date_starts_with: String
-  modified_date_not_starts_with: String
-  modified_date_ends_with: String
-  modified_date_not_ends_with: String
-  AND: [BookFeedWhereInput!]
-  OR: [BookFeedWhereInput!]
-  NOT: [BookFeedWhereInput!]
-}
-
-input BookFeedWhereUniqueInput {
-  id: ID
-}
-
 enum BookOrderByInput {
   id_ASC
   id_DESC
@@ -282,8 +68,12 @@ enum BookOrderByInput {
   isbn_DESC
   author_ASC
   author_DESC
-  book_cover_ASC
-  book_cover_DESC
+  cover_ASC
+  cover_DESC
+  publisher_ASC
+  publisher_DESC
+  description_ASC
+  description_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -295,7 +85,11 @@ type BookPreviousValues {
   title: String!
   isbn: String!
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type BookSubscriptionPayload {
@@ -320,21 +114,27 @@ input BookUpdateDataInput {
   title: String
   isbn: String
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
 }
 
 input BookUpdateInput {
   title: String
   isbn: String
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
 }
 
 input BookUpdateManyMutationInput {
   title: String
   isbn: String
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
 }
 
 input BookUpdateOneRequiredInput {
@@ -406,20 +206,64 @@ input BookWhereInput {
   author_not_starts_with: String
   author_ends_with: String
   author_not_ends_with: String
-  book_cover: String
-  book_cover_not: String
-  book_cover_in: [String!]
-  book_cover_not_in: [String!]
-  book_cover_lt: String
-  book_cover_lte: String
-  book_cover_gt: String
-  book_cover_gte: String
-  book_cover_contains: String
-  book_cover_not_contains: String
-  book_cover_starts_with: String
-  book_cover_not_starts_with: String
-  book_cover_ends_with: String
-  book_cover_not_ends_with: String
+  cover: String
+  cover_not: String
+  cover_in: [String!]
+  cover_not_in: [String!]
+  cover_lt: String
+  cover_lte: String
+  cover_gt: String
+  cover_gte: String
+  cover_contains: String
+  cover_not_contains: String
+  cover_starts_with: String
+  cover_not_starts_with: String
+  cover_ends_with: String
+  cover_not_ends_with: String
+  publisher: String
+  publisher_not: String
+  publisher_in: [String!]
+  publisher_not_in: [String!]
+  publisher_lt: String
+  publisher_lte: String
+  publisher_gt: String
+  publisher_gte: String
+  publisher_contains: String
+  publisher_not_contains: String
+  publisher_starts_with: String
+  publisher_not_starts_with: String
+  publisher_ends_with: String
+  publisher_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [BookWhereInput!]
   OR: [BookWhereInput!]
   NOT: [BookWhereInput!]
@@ -429,6 +273,8 @@ input BookWhereUniqueInput {
   id: ID
   isbn: String
 }
+
+scalar DateTime
 
 enum FeedStatus {
   CURRENT_READING
@@ -445,12 +291,6 @@ type Mutation {
   upsertBook(where: BookWhereUniqueInput!, create: BookCreateInput!, update: BookUpdateInput!): Book!
   deleteBook(where: BookWhereUniqueInput!): Book
   deleteManyBooks(where: BookWhereInput): BatchPayload!
-  createBookFeed(data: BookFeedCreateInput!): BookFeed!
-  updateBookFeed(data: BookFeedUpdateInput!, where: BookFeedWhereUniqueInput!): BookFeed
-  updateManyBookFeeds(data: BookFeedUpdateManyMutationInput!, where: BookFeedWhereInput): BatchPayload!
-  upsertBookFeed(where: BookFeedWhereUniqueInput!, create: BookFeedCreateInput!, update: BookFeedUpdateInput!): BookFeed!
-  deleteBookFeed(where: BookFeedWhereUniqueInput!): BookFeed
-  deleteManyBookFeeds(where: BookFeedWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
@@ -463,6 +303,12 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  createUserBook(data: UserBookCreateInput!): UserBook!
+  updateUserBook(data: UserBookUpdateInput!, where: UserBookWhereUniqueInput!): UserBook
+  updateManyUserBooks(data: UserBookUpdateManyMutationInput!, where: UserBookWhereInput): BatchPayload!
+  upsertUserBook(where: UserBookWhereUniqueInput!, create: UserBookCreateInput!, update: UserBookUpdateInput!): UserBook!
+  deleteUserBook(where: UserBookWhereUniqueInput!): UserBook
+  deleteManyUserBooks(where: UserBookWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -485,9 +331,12 @@ type PageInfo {
 type Post {
   id: ID!
   user: User!
-  bookfeed: BookFeed!
-  like_count: Int!
-  liked: Boolean!
+  userBook: UserBook!
+  likes: Int!
+  backgroundTheme: String
+  content: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type PostConnection {
@@ -497,10 +346,35 @@ type PostConnection {
 }
 
 input PostCreateInput {
-  user: UserCreateOneInput!
-  bookfeed: BookFeedCreateOneInput!
-  like_count: Int
-  liked: Boolean
+  user: UserCreateOneWithoutPostsInput!
+  userBook: UserBookCreateOneWithoutPostsInput!
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostCreateManyWithoutUserBookInput {
+  create: [PostCreateWithoutUserBookInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input PostCreateManyWithoutUserInput {
+  create: [PostCreateWithoutUserInput!]
+  connect: [PostWhereUniqueInput!]
+}
+
+input PostCreateWithoutUserBookInput {
+  user: UserCreateOneWithoutPostsInput!
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostCreateWithoutUserInput {
+  userBook: UserBookCreateOneWithoutPostsInput!
+  likes: Int
+  backgroundTheme: String
+  content: String
 }
 
 type PostEdge {
@@ -511,10 +385,12 @@ type PostEdge {
 enum PostOrderByInput {
   id_ASC
   id_DESC
-  like_count_ASC
-  like_count_DESC
-  liked_ASC
-  liked_DESC
+  likes_ASC
+  likes_DESC
+  backgroundTheme_ASC
+  backgroundTheme_DESC
+  content_ASC
+  content_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -523,8 +399,83 @@ enum PostOrderByInput {
 
 type PostPreviousValues {
   id: ID!
-  like_count: Int!
-  liked: Boolean!
+  likes: Int!
+  backgroundTheme: String
+  content: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input PostScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  likes: Int
+  likes_not: Int
+  likes_in: [Int!]
+  likes_not_in: [Int!]
+  likes_lt: Int
+  likes_lte: Int
+  likes_gt: Int
+  likes_gte: Int
+  backgroundTheme: String
+  backgroundTheme_not: String
+  backgroundTheme_in: [String!]
+  backgroundTheme_not_in: [String!]
+  backgroundTheme_lt: String
+  backgroundTheme_lte: String
+  backgroundTheme_gt: String
+  backgroundTheme_gte: String
+  backgroundTheme_contains: String
+  backgroundTheme_not_contains: String
+  backgroundTheme_starts_with: String
+  backgroundTheme_not_starts_with: String
+  backgroundTheme_ends_with: String
+  backgroundTheme_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [PostScalarWhereInput!]
+  OR: [PostScalarWhereInput!]
+  NOT: [PostScalarWhereInput!]
 }
 
 type PostSubscriptionPayload {
@@ -546,15 +497,88 @@ input PostSubscriptionWhereInput {
 }
 
 input PostUpdateInput {
-  user: UserUpdateOneRequiredInput
-  bookfeed: BookFeedUpdateOneRequiredInput
-  like_count: Int
-  liked: Boolean
+  user: UserUpdateOneRequiredWithoutPostsInput
+  userBook: UserBookUpdateOneRequiredWithoutPostsInput
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostUpdateManyDataInput {
+  likes: Int
+  backgroundTheme: String
+  content: String
 }
 
 input PostUpdateManyMutationInput {
-  like_count: Int
-  liked: Boolean
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostUpdateManyWithoutUserBookInput {
+  create: [PostCreateWithoutUserBookInput!]
+  delete: [PostWhereUniqueInput!]
+  connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
+  update: [PostUpdateWithWhereUniqueWithoutUserBookInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutUserBookInput!]
+  deleteMany: [PostScalarWhereInput!]
+  updateMany: [PostUpdateManyWithWhereNestedInput!]
+}
+
+input PostUpdateManyWithoutUserInput {
+  create: [PostCreateWithoutUserInput!]
+  delete: [PostWhereUniqueInput!]
+  connect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  disconnect: [PostWhereUniqueInput!]
+  update: [PostUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [PostScalarWhereInput!]
+  updateMany: [PostUpdateManyWithWhereNestedInput!]
+}
+
+input PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput!
+  data: PostUpdateManyDataInput!
+}
+
+input PostUpdateWithoutUserBookDataInput {
+  user: UserUpdateOneRequiredWithoutPostsInput
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostUpdateWithoutUserDataInput {
+  userBook: UserBookUpdateOneRequiredWithoutPostsInput
+  likes: Int
+  backgroundTheme: String
+  content: String
+}
+
+input PostUpdateWithWhereUniqueWithoutUserBookInput {
+  where: PostWhereUniqueInput!
+  data: PostUpdateWithoutUserBookDataInput!
+}
+
+input PostUpdateWithWhereUniqueWithoutUserInput {
+  where: PostWhereUniqueInput!
+  data: PostUpdateWithoutUserDataInput!
+}
+
+input PostUpsertWithWhereUniqueWithoutUserBookInput {
+  where: PostWhereUniqueInput!
+  update: PostUpdateWithoutUserBookDataInput!
+  create: PostCreateWithoutUserBookInput!
+}
+
+input PostUpsertWithWhereUniqueWithoutUserInput {
+  where: PostWhereUniqueInput!
+  update: PostUpdateWithoutUserDataInput!
+  create: PostCreateWithoutUserInput!
 }
 
 input PostWhereInput {
@@ -573,17 +597,59 @@ input PostWhereInput {
   id_ends_with: ID
   id_not_ends_with: ID
   user: UserWhereInput
-  bookfeed: BookFeedWhereInput
-  like_count: Int
-  like_count_not: Int
-  like_count_in: [Int!]
-  like_count_not_in: [Int!]
-  like_count_lt: Int
-  like_count_lte: Int
-  like_count_gt: Int
-  like_count_gte: Int
-  liked: Boolean
-  liked_not: Boolean
+  userBook: UserBookWhereInput
+  likes: Int
+  likes_not: Int
+  likes_in: [Int!]
+  likes_not_in: [Int!]
+  likes_lt: Int
+  likes_lte: Int
+  likes_gt: Int
+  likes_gte: Int
+  backgroundTheme: String
+  backgroundTheme_not: String
+  backgroundTheme_in: [String!]
+  backgroundTheme_not_in: [String!]
+  backgroundTheme_lt: String
+  backgroundTheme_lte: String
+  backgroundTheme_gt: String
+  backgroundTheme_gte: String
+  backgroundTheme_contains: String
+  backgroundTheme_not_contains: String
+  backgroundTheme_starts_with: String
+  backgroundTheme_not_starts_with: String
+  backgroundTheme_ends_with: String
+  backgroundTheme_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
@@ -597,28 +663,332 @@ type Query {
   book(where: BookWhereUniqueInput!): Book
   books(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Book]!
   booksConnection(where: BookWhereInput, orderBy: BookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookConnection!
-  bookFeed(where: BookFeedWhereUniqueInput!): BookFeed
-  bookFeeds(where: BookFeedWhereInput, orderBy: BookFeedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [BookFeed]!
-  bookFeedsConnection(where: BookFeedWhereInput, orderBy: BookFeedOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BookFeedConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  userBook(where: UserBookWhereUniqueInput!): UserBook
+  userBooks(where: UserBookWhereInput, orderBy: UserBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserBook]!
+  userBooksConnection(where: UserBookWhereInput, orderBy: UserBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserBookConnection!
   node(id: ID!): Node
 }
 
 type Subscription {
   book(where: BookSubscriptionWhereInput): BookSubscriptionPayload
-  bookFeed(where: BookFeedSubscriptionWhereInput): BookFeedSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  userBook(where: UserBookSubscriptionWhereInput): UserBookSubscriptionPayload
 }
 
 type User {
   id: ID!
-  name: String!
+  username: String!
+  email: String!
+  password: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  books(where: UserBookWhereInput, orderBy: UserBookOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserBook!]
+  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+}
+
+type UserBook {
+  id: ID!
+  user: User!
+  book: Book!
+  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserBookConnection {
+  pageInfo: PageInfo!
+  edges: [UserBookEdge]!
+  aggregate: AggregateUserBook!
+}
+
+input UserBookCreateInput {
+  user: UserCreateOneWithoutBooksInput!
+  book: BookCreateOneInput!
+  posts: PostCreateManyWithoutUserBookInput
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime!
+}
+
+input UserBookCreateManyWithoutUserInput {
+  create: [UserBookCreateWithoutUserInput!]
+  connect: [UserBookWhereUniqueInput!]
+}
+
+input UserBookCreateOneWithoutPostsInput {
+  create: UserBookCreateWithoutPostsInput
+  connect: UserBookWhereUniqueInput
+}
+
+input UserBookCreateWithoutPostsInput {
+  user: UserCreateOneWithoutBooksInput!
+  book: BookCreateOneInput!
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime!
+}
+
+input UserBookCreateWithoutUserInput {
+  book: BookCreateOneInput!
+  posts: PostCreateManyWithoutUserBookInput
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime!
+}
+
+type UserBookEdge {
+  node: UserBook!
+  cursor: String!
+}
+
+enum UserBookOrderByInput {
+  id_ASC
+  id_DESC
+  rating_ASC
+  rating_DESC
+  status_ASC
+  status_DESC
+  readAt_ASC
+  readAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type UserBookPreviousValues {
+  id: ID!
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserBookScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  rating: Float
+  rating_not: Float
+  rating_in: [Float!]
+  rating_not_in: [Float!]
+  rating_lt: Float
+  rating_lte: Float
+  rating_gt: Float
+  rating_gte: Float
+  status: FeedStatus
+  status_not: FeedStatus
+  status_in: [FeedStatus!]
+  status_not_in: [FeedStatus!]
+  readAt: DateTime
+  readAt_not: DateTime
+  readAt_in: [DateTime!]
+  readAt_not_in: [DateTime!]
+  readAt_lt: DateTime
+  readAt_lte: DateTime
+  readAt_gt: DateTime
+  readAt_gte: DateTime
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [UserBookScalarWhereInput!]
+  OR: [UserBookScalarWhereInput!]
+  NOT: [UserBookScalarWhereInput!]
+}
+
+type UserBookSubscriptionPayload {
+  mutation: MutationType!
+  node: UserBook
+  updatedFields: [String!]
+  previousValues: UserBookPreviousValues
+}
+
+input UserBookSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: UserBookWhereInput
+  AND: [UserBookSubscriptionWhereInput!]
+  OR: [UserBookSubscriptionWhereInput!]
+  NOT: [UserBookSubscriptionWhereInput!]
+}
+
+input UserBookUpdateInput {
+  user: UserUpdateOneRequiredWithoutBooksInput
+  book: BookUpdateOneRequiredInput
+  posts: PostUpdateManyWithoutUserBookInput
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime
+}
+
+input UserBookUpdateManyDataInput {
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime
+}
+
+input UserBookUpdateManyMutationInput {
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime
+}
+
+input UserBookUpdateManyWithoutUserInput {
+  create: [UserBookCreateWithoutUserInput!]
+  delete: [UserBookWhereUniqueInput!]
+  connect: [UserBookWhereUniqueInput!]
+  set: [UserBookWhereUniqueInput!]
+  disconnect: [UserBookWhereUniqueInput!]
+  update: [UserBookUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [UserBookUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [UserBookScalarWhereInput!]
+  updateMany: [UserBookUpdateManyWithWhereNestedInput!]
+}
+
+input UserBookUpdateManyWithWhereNestedInput {
+  where: UserBookScalarWhereInput!
+  data: UserBookUpdateManyDataInput!
+}
+
+input UserBookUpdateOneRequiredWithoutPostsInput {
+  create: UserBookCreateWithoutPostsInput
+  update: UserBookUpdateWithoutPostsDataInput
+  upsert: UserBookUpsertWithoutPostsInput
+  connect: UserBookWhereUniqueInput
+}
+
+input UserBookUpdateWithoutPostsDataInput {
+  user: UserUpdateOneRequiredWithoutBooksInput
+  book: BookUpdateOneRequiredInput
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime
+}
+
+input UserBookUpdateWithoutUserDataInput {
+  book: BookUpdateOneRequiredInput
+  posts: PostUpdateManyWithoutUserBookInput
+  rating: Float
+  status: FeedStatus
+  readAt: DateTime
+}
+
+input UserBookUpdateWithWhereUniqueWithoutUserInput {
+  where: UserBookWhereUniqueInput!
+  data: UserBookUpdateWithoutUserDataInput!
+}
+
+input UserBookUpsertWithoutPostsInput {
+  update: UserBookUpdateWithoutPostsDataInput!
+  create: UserBookCreateWithoutPostsInput!
+}
+
+input UserBookUpsertWithWhereUniqueWithoutUserInput {
+  where: UserBookWhereUniqueInput!
+  update: UserBookUpdateWithoutUserDataInput!
+  create: UserBookCreateWithoutUserInput!
+}
+
+input UserBookWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  user: UserWhereInput
+  book: BookWhereInput
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
+  rating: Float
+  rating_not: Float
+  rating_in: [Float!]
+  rating_not_in: [Float!]
+  rating_lt: Float
+  rating_lte: Float
+  rating_gt: Float
+  rating_gte: Float
+  status: FeedStatus
+  status_not: FeedStatus
+  status_in: [FeedStatus!]
+  status_not_in: [FeedStatus!]
+  readAt: DateTime
+  readAt_not: DateTime
+  readAt_in: [DateTime!]
+  readAt_not_in: [DateTime!]
+  readAt_lt: DateTime
+  readAt_lte: DateTime
+  readAt_gt: DateTime
+  readAt_gte: DateTime
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [UserBookWhereInput!]
+  OR: [UserBookWhereInput!]
+  NOT: [UserBookWhereInput!]
+}
+
+input UserBookWhereUniqueInput {
+  id: ID
 }
 
 type UserConnection {
@@ -628,12 +998,35 @@ type UserConnection {
 }
 
 input UserCreateInput {
-  name: String!
+  username: String!
+  email: String!
+  password: String
+  books: UserBookCreateManyWithoutUserInput
+  posts: PostCreateManyWithoutUserInput
 }
 
-input UserCreateOneInput {
-  create: UserCreateInput
+input UserCreateOneWithoutBooksInput {
+  create: UserCreateWithoutBooksInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutPostsInput {
+  create: UserCreateWithoutPostsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutBooksInput {
+  username: String!
+  email: String!
+  password: String
+  posts: PostCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutPostsInput {
+  username: String!
+  email: String!
+  password: String
+  books: UserBookCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -644,8 +1037,12 @@ type UserEdge {
 enum UserOrderByInput {
   id_ASC
   id_DESC
-  name_ASC
-  name_DESC
+  username_ASC
+  username_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -654,7 +1051,11 @@ enum UserOrderByInput {
 
 type UserPreviousValues {
   id: ID!
-  name: String!
+  username: String!
+  email: String!
+  password: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type UserSubscriptionPayload {
@@ -675,28 +1076,56 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
-input UserUpdateDataInput {
-  name: String
-}
-
 input UserUpdateInput {
-  name: String
+  username: String
+  email: String
+  password: String
+  books: UserBookUpdateManyWithoutUserInput
+  posts: PostUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyMutationInput {
-  name: String
+  username: String
+  email: String
+  password: String
 }
 
-input UserUpdateOneRequiredInput {
-  create: UserCreateInput
-  update: UserUpdateDataInput
-  upsert: UserUpsertNestedInput
+input UserUpdateOneRequiredWithoutBooksInput {
+  create: UserCreateWithoutBooksInput
+  update: UserUpdateWithoutBooksDataInput
+  upsert: UserUpsertWithoutBooksInput
   connect: UserWhereUniqueInput
 }
 
-input UserUpsertNestedInput {
-  update: UserUpdateDataInput!
-  create: UserCreateInput!
+input UserUpdateOneRequiredWithoutPostsInput {
+  create: UserCreateWithoutPostsInput
+  update: UserUpdateWithoutPostsDataInput
+  upsert: UserUpsertWithoutPostsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutBooksDataInput {
+  username: String
+  email: String
+  password: String
+  posts: PostUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutPostsDataInput {
+  username: String
+  email: String
+  password: String
+  books: UserBookUpdateManyWithoutUserInput
+}
+
+input UserUpsertWithoutBooksInput {
+  update: UserUpdateWithoutBooksDataInput!
+  create: UserCreateWithoutBooksInput!
+}
+
+input UserUpsertWithoutPostsInput {
+  update: UserUpdateWithoutPostsDataInput!
+  create: UserCreateWithoutPostsInput!
 }
 
 input UserWhereInput {
@@ -714,20 +1143,70 @@ input UserWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  name: String
-  name_not: String
-  name_in: [String!]
-  name_not_in: [String!]
-  name_lt: String
-  name_lte: String
-  name_gt: String
-  name_gte: String
-  name_contains: String
-  name_not_contains: String
-  name_starts_with: String
-  name_not_starts_with: String
-  name_ends_with: String
-  name_not_ends_with: String
+  username: String
+  username_not: String
+  username_in: [String!]
+  username_not_in: [String!]
+  username_lt: String
+  username_lte: String
+  username_gt: String
+  username_gte: String
+  username_contains: String
+  username_not_contains: String
+  username_starts_with: String
+  username_not_starts_with: String
+  username_ends_with: String
+  username_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  books_every: UserBookWhereInput
+  books_some: UserBookWhereInput
+  books_none: UserBookWhereInput
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
@@ -735,5 +1214,7 @@ input UserWhereInput {
 
 input UserWhereUniqueInput {
   id: ID
+  username: String
+  email: String
 }
 `

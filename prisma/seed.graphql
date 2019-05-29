@@ -1,69 +1,62 @@
-
 mutation {
-  Post1: createPost(
+  createBook(
     data: {
-      user: {
-        create: {
-          name: "tester_1"
-        }
-      }
-      bookfeed: {
-        create: {
-          book: {
-            create: {
-              title: "sample book title 1"
-              isbn: "11111"
-              author: "anonymous"
-            }
-          }
-        }
-      }
+        title: "테스트 도서 1"
+        isbn: "100000000"
+        author: "테스트 작가 1"
     }
-   ){
-     id
-   }
-   Post2: createPost(
+  ) {
+    id
+    title
+  }
+}
+mutation {
+  createBook(
     data: {
-      user: {
-        create: {
-          name: "tester_2"
-        }
-      }
-      bookfeed: {
-        create: {
-          book: {
-            create: {
-              title: "sample book title 2"
-              isbn: "22222"
-              author: "anonymous"
-            }
-          }
-        }
-      }
+        title: "테스트 도서 2"
+        isbn: "200000000"
+        author: "테스트 작가 2"
     }
-   ){
-     id
-   }
-   Post3: createPost(
+  ) {
+    id
+    title
+  }
+}
+mutation {
+  createUser(
     data: {
-      user: {
-        create: {
-          name: "tester_3"
-        }
-      }
-      bookfeed: {
-        create: {
-          book: {
-            create: {
-              title: "sample book title 3"
-              isbn: "33333"
-              author: "anonymous"
-            }
-          }
-        }
-      }
+      username: "test"
+      email: "test@test.com"
     }
-   ){
-     id
-   }
+  ) {
+    id
+    username
+  }
+}
+mutation {
+  createUserBook(
+    data: {
+      rating: 3.0
+      status: READ
+      user: {
+        connect: {
+          username: "test"
+        }
+      }
+      book: {
+        connect: {
+          isbn: "200000000"
+        }
+      }
+      readAt: "2019-05-21T22:08:34+09:00"
+    }
+  ) {
+    id
+    user {
+      username
+    }
+    book {
+      title
+    }
+  }
 }
