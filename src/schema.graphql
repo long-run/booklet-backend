@@ -3,16 +3,18 @@ type User {
   username: String!
 }
 
+scalar Date
+
 type Book {
-  id: ID! @unique
+  id: ID!
   title: String!
-  isbn: String! @unique
-  author: String @default(value: "")
-  cover: String @default(value: "")
-  publisher: String @default(value: "")
-  description: String @default(value: "")
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  isbn: String!
+  author: String
+  cover: String
+  publisher: String
+  description: String
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type Query {
