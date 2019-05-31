@@ -1,66 +1,29 @@
-import { GraphQLServer } from 'graphql-yoga'
+import { GraphQLServer } from 'graphql-yoga';
 import { prisma } from './generated/prisma-client'
-import { Context } from './utils'
-
-const resolvers = {
-  Query: {
-    user(parent, { id }, context: Context) {
-      return context.prisma.user({ id })
-    },
-    book(parent, { isbn }, context: Context) {
-      return context.prisma.book({ isbn })
-    },
-    bookFeed(parent, { id }, context: Context) {
-      return context.prisma.bookFeed({ id })
-    },
-    posts(parent, args, context: Context) {
-      return context.prisma.posts()
-    },
-    post(parent, {id}, context: Context) {
-      return context.prisma.post({ id })
-    }
-  },
-  Post: {
-    user(parent, args, context: Context) {
-      return context.prisma.post({ id: parent.id }).user()
-    },
-    bookfeed(parent, args, context: Context) {
-      return context.prisma.post({ id: parent.id }).bookfeed()
-    },
-  },
-  BookFeed: {
-    book(parent, args, context: Context) {
-      return context.prisma.bookFeed({ id: parent.id }).book()
-    }
-  },
-  Mutation: {
-    createBook(parent, { title, isbn, author }, context: Context) {
-      return context.prisma.createBook({ title, isbn, author })
-    },
-    deleteBook(parent, { isbn }, context: Context) {
-      return context.prisma.deleteBook({ isbn })
-    },
-    createUser(parent, { name }, context: Context) {
-      return context.prisma.createUser({ name })
-    },
-    deleteUser(parent, { id }, context: Context) {
-      return context.prisma.deleteUser({ id })
-    }
-    // deletePost(parent, { id }, context: Context) {
-    //   return context.prisma.deletePost({ id })
-    // },
-    // publish(parent, { id }, context: Context) {
-    //   return context.prisma.updatePost({
-    //     where: { id },
-    //     data: { published: true },
-    //   })
-    // },
-  },
-}
+import resolvers from './resolvers';
+import {getUser} from "./authorizer";
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
-  context: { prisma },
-})
-server.start(() => console.log('Server is running on http://localhost:4000'))
+  context: ({ request }) => {
+    const tokenWithBearer = request.headers.authorization || '';
+    const token = tokenWithBearer.split(' ')[1];
+    const user = getUser(token);
+
+    return {
+      user,
+      prisma, // the generated prisma client if you are using it
+    };
+  },
+});
+server.start({
+    cors: {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    }
+  },
+  () => console.log('Server is running on http://localhost:4000'),
+);

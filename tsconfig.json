@@ -1,13 +1,23 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "module": "commonjs",
     "sourceMap": true,
     "rootDir": "src",
     "outDir": "dist",
+    "allowJs": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "strict": true,
     "lib": [
-      "esnext", "dom"
+      "esnext",
+      "dom"
     ]
   }
 }

@@ -1,52 +1,33 @@
-type Query {
-  user(id: ID!): User
-  book(isbn: String!): Book
-  bookFeed(id: ID!): BookFeed
-  posts:[Post]
-  post(id: ID!): Post
-}
-
-type Mutation {
-  createBook(title: String, isbn: String, author: String): Book
-  deleteBook(isbn: String): Book
-  createUser(name: String): User
-  deleteUser(id: String): User
-}
-
 type User {
   id: ID!
-  name: String!
+  username: String!
 }
+
+scalar Date
 
 type Book {
   id: ID!
   title: String!
   isbn: String!
   author: String
-  book_cover: String
+  cover: String
+  publisher: String
+  description: String
+  createdAt: Date!
+  updatedAt: Date!
 }
 
-type BookFeed {
-  id: ID!
-  book: Book!
-  rating: Int
-  status: FeedStatus
-  background_theme: String
-  note: String
-  reg_date: String
-  modified_date: String
+type Query {
+  currentUser: User!
+  search(keyword: String!): [Book!]!
 }
 
-type Post {
-  id: ID!
-  user: User!
-  bookfeed: BookFeed!
-  like_count: Int!
-  liked: Boolean!
+type Mutation {
+  register(username: String!, password: String!): User!
+  login(username: String!, password: String!): LoginResponse!
 }
 
-enum FeedStatus {
-  CURRENT_READING,
-  READ,
-  WANT_TO_READ
+type LoginResponse {
+  token: String
+  user: User
 }

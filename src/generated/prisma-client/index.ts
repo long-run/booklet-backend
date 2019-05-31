@@ -15,9 +15,9 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 
 export interface Exists {
   book: (where?: BookWhereInput) => Promise<boolean>;
-  bookFeed: (where?: BookFeedWhereInput) => Promise<boolean>;
   post: (where?: PostWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
+  userBook: (where?: UserBookWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -62,29 +62,6 @@ export interface Prisma {
       last?: Int;
     }
   ) => BookConnectionPromise;
-  bookFeed: (where: BookFeedWhereUniqueInput) => BookFeedPromise;
-  bookFeeds: (
-    args?: {
-      where?: BookFeedWhereInput;
-      orderBy?: BookFeedOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => FragmentableArray<BookFeed>;
-  bookFeedsConnection: (
-    args?: {
-      where?: BookFeedWhereInput;
-      orderBy?: BookFeedOrderByInput;
-      skip?: Int;
-      after?: String;
-      before?: String;
-      first?: Int;
-      last?: Int;
-    }
-  ) => BookFeedConnectionPromise;
   post: (where: PostWhereUniqueInput) => PostPromise;
   posts: (
     args?: {
@@ -131,6 +108,29 @@ export interface Prisma {
       last?: Int;
     }
   ) => UserConnectionPromise;
+  userBook: (where: UserBookWhereUniqueInput) => UserBookPromise;
+  userBooks: (
+    args?: {
+      where?: UserBookWhereInput;
+      orderBy?: UserBookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => FragmentableArray<UserBook>;
+  userBooksConnection: (
+    args?: {
+      where?: UserBookWhereInput;
+      orderBy?: UserBookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => UserBookConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -153,22 +153,6 @@ export interface Prisma {
   ) => BookPromise;
   deleteBook: (where: BookWhereUniqueInput) => BookPromise;
   deleteManyBooks: (where?: BookWhereInput) => BatchPayloadPromise;
-  createBookFeed: (data: BookFeedCreateInput) => BookFeedPromise;
-  updateBookFeed: (
-    args: { data: BookFeedUpdateInput; where: BookFeedWhereUniqueInput }
-  ) => BookFeedPromise;
-  updateManyBookFeeds: (
-    args: { data: BookFeedUpdateManyMutationInput; where?: BookFeedWhereInput }
-  ) => BatchPayloadPromise;
-  upsertBookFeed: (
-    args: {
-      where: BookFeedWhereUniqueInput;
-      create: BookFeedCreateInput;
-      update: BookFeedUpdateInput;
-    }
-  ) => BookFeedPromise;
-  deleteBookFeed: (where: BookFeedWhereUniqueInput) => BookFeedPromise;
-  deleteManyBookFeeds: (where?: BookFeedWhereInput) => BatchPayloadPromise;
   createPost: (data: PostCreateInput) => PostPromise;
   updatePost: (
     args: { data: PostUpdateInput; where: PostWhereUniqueInput }
@@ -201,6 +185,22 @@ export interface Prisma {
   ) => UserPromise;
   deleteUser: (where: UserWhereUniqueInput) => UserPromise;
   deleteManyUsers: (where?: UserWhereInput) => BatchPayloadPromise;
+  createUserBook: (data: UserBookCreateInput) => UserBookPromise;
+  updateUserBook: (
+    args: { data: UserBookUpdateInput; where: UserBookWhereUniqueInput }
+  ) => UserBookPromise;
+  updateManyUserBooks: (
+    args: { data: UserBookUpdateManyMutationInput; where?: UserBookWhereInput }
+  ) => BatchPayloadPromise;
+  upsertUserBook: (
+    args: {
+      where: UserBookWhereUniqueInput;
+      create: UserBookCreateInput;
+      update: UserBookUpdateInput;
+    }
+  ) => UserBookPromise;
+  deleteUserBook: (where: UserBookWhereUniqueInput) => UserBookPromise;
+  deleteManyUserBooks: (where?: UserBookWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -213,15 +213,15 @@ export interface Subscription {
   book: (
     where?: BookSubscriptionWhereInput
   ) => BookSubscriptionPayloadSubscription;
-  bookFeed: (
-    where?: BookFeedSubscriptionWhereInput
-  ) => BookFeedSubscriptionPayloadSubscription;
   post: (
     where?: PostSubscriptionWhereInput
   ) => PostSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
+  userBook: (
+    where?: UserBookSubscriptionWhereInput
+  ) => UserBookSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -241,8 +241,12 @@ export type BookOrderByInput =
   | "isbn_DESC"
   | "author_ASC"
   | "author_DESC"
-  | "book_cover_ASC"
-  | "book_cover_DESC"
+  | "cover_ASC"
+  | "cover_DESC"
+  | "publisher_ASC"
+  | "publisher_DESC"
+  | "description_ASC"
+  | "description_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -250,21 +254,15 @@ export type BookOrderByInput =
 
 export type FeedStatus = "CURRENT_READING" | "READ" | "WANT_TO_READ";
 
-export type BookFeedOrderByInput =
+export type UserBookOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "rating_ASC"
   | "rating_DESC"
   | "status_ASC"
   | "status_DESC"
-  | "background_theme_ASC"
-  | "background_theme_DESC"
-  | "note_ASC"
-  | "note_DESC"
-  | "reg_date_ASC"
-  | "reg_date_DESC"
-  | "modified_date_ASC"
-  | "modified_date_DESC"
+  | "readAt_ASC"
+  | "readAt_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -273,10 +271,12 @@ export type BookFeedOrderByInput =
 export type PostOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "like_count_ASC"
-  | "like_count_DESC"
-  | "liked_ASC"
-  | "liked_DESC"
+  | "likes_ASC"
+  | "likes_DESC"
+  | "backgroundTheme_ASC"
+  | "backgroundTheme_DESC"
+  | "content_ASC"
+  | "content_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -285,8 +285,12 @@ export type PostOrderByInput =
 export type UserOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "name_ASC"
-  | "name_DESC"
+  | "username_ASC"
+  | "username_DESC"
+  | "email_ASC"
+  | "email_DESC"
+  | "password_ASC"
+  | "password_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -356,123 +360,74 @@ export interface BookWhereInput {
   author_not_starts_with?: String;
   author_ends_with?: String;
   author_not_ends_with?: String;
-  book_cover?: String;
-  book_cover_not?: String;
-  book_cover_in?: String[] | String;
-  book_cover_not_in?: String[] | String;
-  book_cover_lt?: String;
-  book_cover_lte?: String;
-  book_cover_gt?: String;
-  book_cover_gte?: String;
-  book_cover_contains?: String;
-  book_cover_not_contains?: String;
-  book_cover_starts_with?: String;
-  book_cover_not_starts_with?: String;
-  book_cover_ends_with?: String;
-  book_cover_not_ends_with?: String;
+  cover?: String;
+  cover_not?: String;
+  cover_in?: String[] | String;
+  cover_not_in?: String[] | String;
+  cover_lt?: String;
+  cover_lte?: String;
+  cover_gt?: String;
+  cover_gte?: String;
+  cover_contains?: String;
+  cover_not_contains?: String;
+  cover_starts_with?: String;
+  cover_not_starts_with?: String;
+  cover_ends_with?: String;
+  cover_not_ends_with?: String;
+  publisher?: String;
+  publisher_not?: String;
+  publisher_in?: String[] | String;
+  publisher_not_in?: String[] | String;
+  publisher_lt?: String;
+  publisher_lte?: String;
+  publisher_gt?: String;
+  publisher_gte?: String;
+  publisher_contains?: String;
+  publisher_not_contains?: String;
+  publisher_starts_with?: String;
+  publisher_not_starts_with?: String;
+  publisher_ends_with?: String;
+  publisher_not_ends_with?: String;
+  description?: String;
+  description_not?: String;
+  description_in?: String[] | String;
+  description_not_in?: String[] | String;
+  description_lt?: String;
+  description_lte?: String;
+  description_gt?: String;
+  description_gte?: String;
+  description_contains?: String;
+  description_not_contains?: String;
+  description_starts_with?: String;
+  description_not_starts_with?: String;
+  description_ends_with?: String;
+  description_not_ends_with?: String;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
   AND?: BookWhereInput[] | BookWhereInput;
   OR?: BookWhereInput[] | BookWhereInput;
   NOT?: BookWhereInput[] | BookWhereInput;
-}
-
-export type BookFeedWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface BookFeedWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  book?: BookWhereInput;
-  rating?: Int;
-  rating_not?: Int;
-  rating_in?: Int[] | Int;
-  rating_not_in?: Int[] | Int;
-  rating_lt?: Int;
-  rating_lte?: Int;
-  rating_gt?: Int;
-  rating_gte?: Int;
-  status?: FeedStatus;
-  status_not?: FeedStatus;
-  status_in?: FeedStatus[] | FeedStatus;
-  status_not_in?: FeedStatus[] | FeedStatus;
-  background_theme?: String;
-  background_theme_not?: String;
-  background_theme_in?: String[] | String;
-  background_theme_not_in?: String[] | String;
-  background_theme_lt?: String;
-  background_theme_lte?: String;
-  background_theme_gt?: String;
-  background_theme_gte?: String;
-  background_theme_contains?: String;
-  background_theme_not_contains?: String;
-  background_theme_starts_with?: String;
-  background_theme_not_starts_with?: String;
-  background_theme_ends_with?: String;
-  background_theme_not_ends_with?: String;
-  note?: String;
-  note_not?: String;
-  note_in?: String[] | String;
-  note_not_in?: String[] | String;
-  note_lt?: String;
-  note_lte?: String;
-  note_gt?: String;
-  note_gte?: String;
-  note_contains?: String;
-  note_not_contains?: String;
-  note_starts_with?: String;
-  note_not_starts_with?: String;
-  note_ends_with?: String;
-  note_not_ends_with?: String;
-  reg_date?: String;
-  reg_date_not?: String;
-  reg_date_in?: String[] | String;
-  reg_date_not_in?: String[] | String;
-  reg_date_lt?: String;
-  reg_date_lte?: String;
-  reg_date_gt?: String;
-  reg_date_gte?: String;
-  reg_date_contains?: String;
-  reg_date_not_contains?: String;
-  reg_date_starts_with?: String;
-  reg_date_not_starts_with?: String;
-  reg_date_ends_with?: String;
-  reg_date_not_ends_with?: String;
-  modified_date?: String;
-  modified_date_not?: String;
-  modified_date_in?: String[] | String;
-  modified_date_not_in?: String[] | String;
-  modified_date_lt?: String;
-  modified_date_lte?: String;
-  modified_date_gt?: String;
-  modified_date_gte?: String;
-  modified_date_contains?: String;
-  modified_date_not_contains?: String;
-  modified_date_starts_with?: String;
-  modified_date_not_starts_with?: String;
-  modified_date_ends_with?: String;
-  modified_date_not_ends_with?: String;
-  AND?: BookFeedWhereInput[] | BookFeedWhereInput;
-  OR?: BookFeedWhereInput[] | BookFeedWhereInput;
-  NOT?: BookFeedWhereInput[] | BookFeedWhereInput;
 }
 
 export type PostWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
 
-export interface PostWhereInput {
+export interface UserBookWhereInput {
   id?: ID_Input;
   id_not?: ID_Input;
   id_in?: ID_Input[] | ID_Input;
@@ -488,20 +443,49 @@ export interface PostWhereInput {
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
   user?: UserWhereInput;
-  bookfeed?: BookFeedWhereInput;
-  like_count?: Int;
-  like_count_not?: Int;
-  like_count_in?: Int[] | Int;
-  like_count_not_in?: Int[] | Int;
-  like_count_lt?: Int;
-  like_count_lte?: Int;
-  like_count_gt?: Int;
-  like_count_gte?: Int;
-  liked?: Boolean;
-  liked_not?: Boolean;
-  AND?: PostWhereInput[] | PostWhereInput;
-  OR?: PostWhereInput[] | PostWhereInput;
-  NOT?: PostWhereInput[] | PostWhereInput;
+  book?: BookWhereInput;
+  posts_every?: PostWhereInput;
+  posts_some?: PostWhereInput;
+  posts_none?: PostWhereInput;
+  rating?: Float;
+  rating_not?: Float;
+  rating_in?: Float[] | Float;
+  rating_not_in?: Float[] | Float;
+  rating_lt?: Float;
+  rating_lte?: Float;
+  rating_gt?: Float;
+  rating_gte?: Float;
+  status?: FeedStatus;
+  status_not?: FeedStatus;
+  status_in?: FeedStatus[] | FeedStatus;
+  status_not_in?: FeedStatus[] | FeedStatus;
+  readAt?: DateTimeInput;
+  readAt_not?: DateTimeInput;
+  readAt_in?: DateTimeInput[] | DateTimeInput;
+  readAt_not_in?: DateTimeInput[] | DateTimeInput;
+  readAt_lt?: DateTimeInput;
+  readAt_lte?: DateTimeInput;
+  readAt_gt?: DateTimeInput;
+  readAt_gte?: DateTimeInput;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  AND?: UserBookWhereInput[] | UserBookWhereInput;
+  OR?: UserBookWhereInput[] | UserBookWhereInput;
+  NOT?: UserBookWhereInput[] | UserBookWhereInput;
 }
 
 export interface UserWhereInput {
@@ -519,26 +503,156 @@ export interface UserWhereInput {
   id_not_starts_with?: ID_Input;
   id_ends_with?: ID_Input;
   id_not_ends_with?: ID_Input;
-  name?: String;
-  name_not?: String;
-  name_in?: String[] | String;
-  name_not_in?: String[] | String;
-  name_lt?: String;
-  name_lte?: String;
-  name_gt?: String;
-  name_gte?: String;
-  name_contains?: String;
-  name_not_contains?: String;
-  name_starts_with?: String;
-  name_not_starts_with?: String;
-  name_ends_with?: String;
-  name_not_ends_with?: String;
+  username?: String;
+  username_not?: String;
+  username_in?: String[] | String;
+  username_not_in?: String[] | String;
+  username_lt?: String;
+  username_lte?: String;
+  username_gt?: String;
+  username_gte?: String;
+  username_contains?: String;
+  username_not_contains?: String;
+  username_starts_with?: String;
+  username_not_starts_with?: String;
+  username_ends_with?: String;
+  username_not_ends_with?: String;
+  email?: String;
+  email_not?: String;
+  email_in?: String[] | String;
+  email_not_in?: String[] | String;
+  email_lt?: String;
+  email_lte?: String;
+  email_gt?: String;
+  email_gte?: String;
+  email_contains?: String;
+  email_not_contains?: String;
+  email_starts_with?: String;
+  email_not_starts_with?: String;
+  email_ends_with?: String;
+  email_not_ends_with?: String;
+  password?: String;
+  password_not?: String;
+  password_in?: String[] | String;
+  password_not_in?: String[] | String;
+  password_lt?: String;
+  password_lte?: String;
+  password_gt?: String;
+  password_gte?: String;
+  password_contains?: String;
+  password_not_contains?: String;
+  password_starts_with?: String;
+  password_not_starts_with?: String;
+  password_ends_with?: String;
+  password_not_ends_with?: String;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  books_every?: UserBookWhereInput;
+  books_some?: UserBookWhereInput;
+  books_none?: UserBookWhereInput;
+  posts_every?: PostWhereInput;
+  posts_some?: PostWhereInput;
+  posts_none?: PostWhereInput;
   AND?: UserWhereInput[] | UserWhereInput;
   OR?: UserWhereInput[] | UserWhereInput;
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
+export interface PostWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  user?: UserWhereInput;
+  userBook?: UserBookWhereInput;
+  likes?: Int;
+  likes_not?: Int;
+  likes_in?: Int[] | Int;
+  likes_not_in?: Int[] | Int;
+  likes_lt?: Int;
+  likes_lte?: Int;
+  likes_gt?: Int;
+  likes_gte?: Int;
+  backgroundTheme?: String;
+  backgroundTheme_not?: String;
+  backgroundTheme_in?: String[] | String;
+  backgroundTheme_not_in?: String[] | String;
+  backgroundTheme_lt?: String;
+  backgroundTheme_lte?: String;
+  backgroundTheme_gt?: String;
+  backgroundTheme_gte?: String;
+  backgroundTheme_contains?: String;
+  backgroundTheme_not_contains?: String;
+  backgroundTheme_starts_with?: String;
+  backgroundTheme_not_starts_with?: String;
+  backgroundTheme_ends_with?: String;
+  backgroundTheme_not_ends_with?: String;
+  content?: String;
+  content_not?: String;
+  content_in?: String[] | String;
+  content_not_in?: String[] | String;
+  content_lt?: String;
+  content_lte?: String;
+  content_gt?: String;
+  content_gte?: String;
+  content_contains?: String;
+  content_not_contains?: String;
+  content_starts_with?: String;
+  content_not_starts_with?: String;
+  content_ends_with?: String;
+  content_not_ends_with?: String;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  AND?: PostWhereInput[] | PostWhereInput;
+  OR?: PostWhereInput[] | PostWhereInput;
+  NOT?: PostWhereInput[] | PostWhereInput;
+}
+
 export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  username?: String;
+  email?: String;
+}>;
+
+export type UserBookWhereUniqueInput = AtLeastOne<{
   id: ID_Input;
 }>;
 
@@ -546,31 +660,60 @@ export interface BookCreateInput {
   title: String;
   isbn: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
 }
 
 export interface BookUpdateInput {
   title?: String;
   isbn?: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
 }
 
 export interface BookUpdateManyMutationInput {
   title?: String;
   isbn?: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
 }
 
-export interface BookFeedCreateInput {
+export interface PostCreateInput {
+  user: UserCreateOneWithoutPostsInput;
+  userBook: UserBookCreateOneWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface UserCreateOneWithoutPostsInput {
+  create?: UserCreateWithoutPostsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutPostsInput {
+  username: String;
+  email: String;
+  password?: String;
+  books?: UserBookCreateManyWithoutUserInput;
+}
+
+export interface UserBookCreateManyWithoutUserInput {
+  create?: UserBookCreateWithoutUserInput[] | UserBookCreateWithoutUserInput;
+  connect?: UserBookWhereUniqueInput[] | UserBookWhereUniqueInput;
+}
+
+export interface UserBookCreateWithoutUserInput {
   book: BookCreateOneInput;
-  rating?: Int;
+  posts?: PostCreateManyWithoutUserBookInput;
+  rating?: Float;
   status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
+  readAt: DateTimeInput;
 }
 
 export interface BookCreateOneInput {
@@ -578,14 +721,106 @@ export interface BookCreateOneInput {
   connect?: BookWhereUniqueInput;
 }
 
-export interface BookFeedUpdateInput {
-  book?: BookUpdateOneRequiredInput;
-  rating?: Int;
+export interface PostCreateManyWithoutUserBookInput {
+  create?: PostCreateWithoutUserBookInput[] | PostCreateWithoutUserBookInput;
+  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+}
+
+export interface PostCreateWithoutUserBookInput {
+  user: UserCreateOneWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface UserBookCreateOneWithoutPostsInput {
+  create?: UserBookCreateWithoutPostsInput;
+  connect?: UserBookWhereUniqueInput;
+}
+
+export interface UserBookCreateWithoutPostsInput {
+  user: UserCreateOneWithoutBooksInput;
+  book: BookCreateOneInput;
+  rating?: Float;
   status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
+  readAt: DateTimeInput;
+}
+
+export interface UserCreateOneWithoutBooksInput {
+  create?: UserCreateWithoutBooksInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserCreateWithoutBooksInput {
+  username: String;
+  email: String;
+  password?: String;
+  posts?: PostCreateManyWithoutUserInput;
+}
+
+export interface PostCreateManyWithoutUserInput {
+  create?: PostCreateWithoutUserInput[] | PostCreateWithoutUserInput;
+  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+}
+
+export interface PostCreateWithoutUserInput {
+  userBook: UserBookCreateOneWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface PostUpdateInput {
+  user?: UserUpdateOneRequiredWithoutPostsInput;
+  userBook?: UserBookUpdateOneRequiredWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface UserUpdateOneRequiredWithoutPostsInput {
+  create?: UserCreateWithoutPostsInput;
+  update?: UserUpdateWithoutPostsDataInput;
+  upsert?: UserUpsertWithoutPostsInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutPostsDataInput {
+  username?: String;
+  email?: String;
+  password?: String;
+  books?: UserBookUpdateManyWithoutUserInput;
+}
+
+export interface UserBookUpdateManyWithoutUserInput {
+  create?: UserBookCreateWithoutUserInput[] | UserBookCreateWithoutUserInput;
+  delete?: UserBookWhereUniqueInput[] | UserBookWhereUniqueInput;
+  connect?: UserBookWhereUniqueInput[] | UserBookWhereUniqueInput;
+  set?: UserBookWhereUniqueInput[] | UserBookWhereUniqueInput;
+  disconnect?: UserBookWhereUniqueInput[] | UserBookWhereUniqueInput;
+  update?:
+    | UserBookUpdateWithWhereUniqueWithoutUserInput[]
+    | UserBookUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | UserBookUpsertWithWhereUniqueWithoutUserInput[]
+    | UserBookUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: UserBookScalarWhereInput[] | UserBookScalarWhereInput;
+  updateMany?:
+    | UserBookUpdateManyWithWhereNestedInput[]
+    | UserBookUpdateManyWithWhereNestedInput;
+}
+
+export interface UserBookUpdateWithWhereUniqueWithoutUserInput {
+  where: UserBookWhereUniqueInput;
+  data: UserBookUpdateWithoutUserDataInput;
+}
+
+export interface UserBookUpdateWithoutUserDataInput {
+  book?: BookUpdateOneRequiredInput;
+  posts?: PostUpdateManyWithoutUserBookInput;
+  rating?: Float;
+  status?: FeedStatus;
+  readAt?: DateTimeInput;
 }
 
 export interface BookUpdateOneRequiredInput {
@@ -599,7 +834,9 @@ export interface BookUpdateDataInput {
   title?: String;
   isbn?: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
 }
 
 export interface BookUpsertNestedInput {
@@ -607,92 +844,328 @@ export interface BookUpsertNestedInput {
   create: BookCreateInput;
 }
 
-export interface BookFeedUpdateManyMutationInput {
-  rating?: Int;
+export interface PostUpdateManyWithoutUserBookInput {
+  create?: PostCreateWithoutUserBookInput[] | PostCreateWithoutUserBookInput;
+  delete?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  set?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  disconnect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  update?:
+    | PostUpdateWithWhereUniqueWithoutUserBookInput[]
+    | PostUpdateWithWhereUniqueWithoutUserBookInput;
+  upsert?:
+    | PostUpsertWithWhereUniqueWithoutUserBookInput[]
+    | PostUpsertWithWhereUniqueWithoutUserBookInput;
+  deleteMany?: PostScalarWhereInput[] | PostScalarWhereInput;
+  updateMany?:
+    | PostUpdateManyWithWhereNestedInput[]
+    | PostUpdateManyWithWhereNestedInput;
+}
+
+export interface PostUpdateWithWhereUniqueWithoutUserBookInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutUserBookDataInput;
+}
+
+export interface PostUpdateWithoutUserBookDataInput {
+  user?: UserUpdateOneRequiredWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface PostUpsertWithWhereUniqueWithoutUserBookInput {
+  where: PostWhereUniqueInput;
+  update: PostUpdateWithoutUserBookDataInput;
+  create: PostCreateWithoutUserBookInput;
+}
+
+export interface PostScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  likes?: Int;
+  likes_not?: Int;
+  likes_in?: Int[] | Int;
+  likes_not_in?: Int[] | Int;
+  likes_lt?: Int;
+  likes_lte?: Int;
+  likes_gt?: Int;
+  likes_gte?: Int;
+  backgroundTheme?: String;
+  backgroundTheme_not?: String;
+  backgroundTheme_in?: String[] | String;
+  backgroundTheme_not_in?: String[] | String;
+  backgroundTheme_lt?: String;
+  backgroundTheme_lte?: String;
+  backgroundTheme_gt?: String;
+  backgroundTheme_gte?: String;
+  backgroundTheme_contains?: String;
+  backgroundTheme_not_contains?: String;
+  backgroundTheme_starts_with?: String;
+  backgroundTheme_not_starts_with?: String;
+  backgroundTheme_ends_with?: String;
+  backgroundTheme_not_ends_with?: String;
+  content?: String;
+  content_not?: String;
+  content_in?: String[] | String;
+  content_not_in?: String[] | String;
+  content_lt?: String;
+  content_lte?: String;
+  content_gt?: String;
+  content_gte?: String;
+  content_contains?: String;
+  content_not_contains?: String;
+  content_starts_with?: String;
+  content_not_starts_with?: String;
+  content_ends_with?: String;
+  content_not_ends_with?: String;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  AND?: PostScalarWhereInput[] | PostScalarWhereInput;
+  OR?: PostScalarWhereInput[] | PostScalarWhereInput;
+  NOT?: PostScalarWhereInput[] | PostScalarWhereInput;
+}
+
+export interface PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput;
+  data: PostUpdateManyDataInput;
+}
+
+export interface PostUpdateManyDataInput {
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface UserBookUpsertWithWhereUniqueWithoutUserInput {
+  where: UserBookWhereUniqueInput;
+  update: UserBookUpdateWithoutUserDataInput;
+  create: UserBookCreateWithoutUserInput;
+}
+
+export interface UserBookScalarWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  rating?: Float;
+  rating_not?: Float;
+  rating_in?: Float[] | Float;
+  rating_not_in?: Float[] | Float;
+  rating_lt?: Float;
+  rating_lte?: Float;
+  rating_gt?: Float;
+  rating_gte?: Float;
   status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
+  status_not?: FeedStatus;
+  status_in?: FeedStatus[] | FeedStatus;
+  status_not_in?: FeedStatus[] | FeedStatus;
+  readAt?: DateTimeInput;
+  readAt_not?: DateTimeInput;
+  readAt_in?: DateTimeInput[] | DateTimeInput;
+  readAt_not_in?: DateTimeInput[] | DateTimeInput;
+  readAt_lt?: DateTimeInput;
+  readAt_lte?: DateTimeInput;
+  readAt_gt?: DateTimeInput;
+  readAt_gte?: DateTimeInput;
+  createdAt?: DateTimeInput;
+  createdAt_not?: DateTimeInput;
+  createdAt_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_not_in?: DateTimeInput[] | DateTimeInput;
+  createdAt_lt?: DateTimeInput;
+  createdAt_lte?: DateTimeInput;
+  createdAt_gt?: DateTimeInput;
+  createdAt_gte?: DateTimeInput;
+  updatedAt?: DateTimeInput;
+  updatedAt_not?: DateTimeInput;
+  updatedAt_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_not_in?: DateTimeInput[] | DateTimeInput;
+  updatedAt_lt?: DateTimeInput;
+  updatedAt_lte?: DateTimeInput;
+  updatedAt_gt?: DateTimeInput;
+  updatedAt_gte?: DateTimeInput;
+  AND?: UserBookScalarWhereInput[] | UserBookScalarWhereInput;
+  OR?: UserBookScalarWhereInput[] | UserBookScalarWhereInput;
+  NOT?: UserBookScalarWhereInput[] | UserBookScalarWhereInput;
 }
 
-export interface PostCreateInput {
-  user: UserCreateOneInput;
-  bookfeed: BookFeedCreateOneInput;
-  like_count?: Int;
-  liked?: Boolean;
+export interface UserBookUpdateManyWithWhereNestedInput {
+  where: UserBookScalarWhereInput;
+  data: UserBookUpdateManyDataInput;
 }
 
-export interface UserCreateOneInput {
-  create?: UserCreateInput;
-  connect?: UserWhereUniqueInput;
+export interface UserBookUpdateManyDataInput {
+  rating?: Float;
+  status?: FeedStatus;
+  readAt?: DateTimeInput;
 }
 
-export interface UserCreateInput {
-  name: String;
+export interface UserUpsertWithoutPostsInput {
+  update: UserUpdateWithoutPostsDataInput;
+  create: UserCreateWithoutPostsInput;
 }
 
-export interface BookFeedCreateOneInput {
-  create?: BookFeedCreateInput;
-  connect?: BookFeedWhereUniqueInput;
+export interface UserBookUpdateOneRequiredWithoutPostsInput {
+  create?: UserBookCreateWithoutPostsInput;
+  update?: UserBookUpdateWithoutPostsDataInput;
+  upsert?: UserBookUpsertWithoutPostsInput;
+  connect?: UserBookWhereUniqueInput;
 }
 
-export interface PostUpdateInput {
-  user?: UserUpdateOneRequiredInput;
-  bookfeed?: BookFeedUpdateOneRequiredInput;
-  like_count?: Int;
-  liked?: Boolean;
-}
-
-export interface UserUpdateOneRequiredInput {
-  create?: UserCreateInput;
-  update?: UserUpdateDataInput;
-  upsert?: UserUpsertNestedInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpdateDataInput {
-  name?: String;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface BookFeedUpdateOneRequiredInput {
-  create?: BookFeedCreateInput;
-  update?: BookFeedUpdateDataInput;
-  upsert?: BookFeedUpsertNestedInput;
-  connect?: BookFeedWhereUniqueInput;
-}
-
-export interface BookFeedUpdateDataInput {
+export interface UserBookUpdateWithoutPostsDataInput {
+  user?: UserUpdateOneRequiredWithoutBooksInput;
   book?: BookUpdateOneRequiredInput;
-  rating?: Int;
+  rating?: Float;
   status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
+  readAt?: DateTimeInput;
 }
 
-export interface BookFeedUpsertNestedInput {
-  update: BookFeedUpdateDataInput;
-  create: BookFeedCreateInput;
+export interface UserUpdateOneRequiredWithoutBooksInput {
+  create?: UserCreateWithoutBooksInput;
+  update?: UserUpdateWithoutBooksDataInput;
+  upsert?: UserUpsertWithoutBooksInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface UserUpdateWithoutBooksDataInput {
+  username?: String;
+  email?: String;
+  password?: String;
+  posts?: PostUpdateManyWithoutUserInput;
+}
+
+export interface PostUpdateManyWithoutUserInput {
+  create?: PostCreateWithoutUserInput[] | PostCreateWithoutUserInput;
+  delete?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  connect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  set?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  disconnect?: PostWhereUniqueInput[] | PostWhereUniqueInput;
+  update?:
+    | PostUpdateWithWhereUniqueWithoutUserInput[]
+    | PostUpdateWithWhereUniqueWithoutUserInput;
+  upsert?:
+    | PostUpsertWithWhereUniqueWithoutUserInput[]
+    | PostUpsertWithWhereUniqueWithoutUserInput;
+  deleteMany?: PostScalarWhereInput[] | PostScalarWhereInput;
+  updateMany?:
+    | PostUpdateManyWithWhereNestedInput[]
+    | PostUpdateManyWithWhereNestedInput;
+}
+
+export interface PostUpdateWithWhereUniqueWithoutUserInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutUserDataInput;
+}
+
+export interface PostUpdateWithoutUserDataInput {
+  userBook?: UserBookUpdateOneRequiredWithoutPostsInput;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface PostUpsertWithWhereUniqueWithoutUserInput {
+  where: PostWhereUniqueInput;
+  update: PostUpdateWithoutUserDataInput;
+  create: PostCreateWithoutUserInput;
+}
+
+export interface UserUpsertWithoutBooksInput {
+  update: UserUpdateWithoutBooksDataInput;
+  create: UserCreateWithoutBooksInput;
+}
+
+export interface UserBookUpsertWithoutPostsInput {
+  update: UserBookUpdateWithoutPostsDataInput;
+  create: UserBookCreateWithoutPostsInput;
 }
 
 export interface PostUpdateManyMutationInput {
-  like_count?: Int;
-  liked?: Boolean;
+  likes?: Int;
+  backgroundTheme?: String;
+  content?: String;
+}
+
+export interface UserCreateInput {
+  username: String;
+  email: String;
+  password?: String;
+  books?: UserBookCreateManyWithoutUserInput;
+  posts?: PostCreateManyWithoutUserInput;
 }
 
 export interface UserUpdateInput {
-  name?: String;
+  username?: String;
+  email?: String;
+  password?: String;
+  books?: UserBookUpdateManyWithoutUserInput;
+  posts?: PostUpdateManyWithoutUserInput;
 }
 
 export interface UserUpdateManyMutationInput {
-  name?: String;
+  username?: String;
+  email?: String;
+  password?: String;
+}
+
+export interface UserBookCreateInput {
+  user: UserCreateOneWithoutBooksInput;
+  book: BookCreateOneInput;
+  posts?: PostCreateManyWithoutUserBookInput;
+  rating?: Float;
+  status?: FeedStatus;
+  readAt: DateTimeInput;
+}
+
+export interface UserBookUpdateInput {
+  user?: UserUpdateOneRequiredWithoutBooksInput;
+  book?: BookUpdateOneRequiredInput;
+  posts?: PostUpdateManyWithoutUserBookInput;
+  rating?: Float;
+  status?: FeedStatus;
+  readAt?: DateTimeInput;
+}
+
+export interface UserBookUpdateManyMutationInput {
+  rating?: Float;
+  status?: FeedStatus;
+  readAt?: DateTimeInput;
 }
 
 export interface BookSubscriptionWhereInput {
@@ -704,17 +1177,6 @@ export interface BookSubscriptionWhereInput {
   AND?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
   OR?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
   NOT?: BookSubscriptionWhereInput[] | BookSubscriptionWhereInput;
-}
-
-export interface BookFeedSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: BookFeedWhereInput;
-  AND?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
-  OR?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
-  NOT?: BookFeedSubscriptionWhereInput[] | BookFeedSubscriptionWhereInput;
 }
 
 export interface PostSubscriptionWhereInput {
@@ -739,6 +1201,17 @@ export interface UserSubscriptionWhereInput {
   NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
 }
 
+export interface UserBookSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserBookWhereInput;
+  AND?: UserBookSubscriptionWhereInput[] | UserBookSubscriptionWhereInput;
+  OR?: UserBookSubscriptionWhereInput[] | UserBookSubscriptionWhereInput;
+  NOT?: UserBookSubscriptionWhereInput[] | UserBookSubscriptionWhereInput;
+}
+
 export interface NodeNode {
   id: ID_Output;
 }
@@ -748,7 +1221,11 @@ export interface Book {
   title: String;
   isbn: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface BookPromise extends Promise<Book>, Fragmentable {
@@ -756,7 +1233,11 @@ export interface BookPromise extends Promise<Book>, Fragmentable {
   title: () => Promise<String>;
   isbn: () => Promise<String>;
   author: () => Promise<String>;
-  book_cover: () => Promise<String>;
+  cover: () => Promise<String>;
+  publisher: () => Promise<String>;
+  description: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface BookSubscription
@@ -766,7 +1247,11 @@ export interface BookSubscription
   title: () => Promise<AsyncIterator<String>>;
   isbn: () => Promise<AsyncIterator<String>>;
   author: () => Promise<AsyncIterator<String>>;
-  book_cover: () => Promise<AsyncIterator<String>>;
+  cover: () => Promise<AsyncIterator<String>>;
+  publisher: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface BookConnection {
@@ -846,108 +1331,24 @@ export interface AggregateBookSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface BookFeed {
-  id: ID_Output;
-  rating?: Int;
-  status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
-}
-
-export interface BookFeedPromise extends Promise<BookFeed>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  book: <T = BookPromise>() => T;
-  rating: () => Promise<Int>;
-  status: () => Promise<FeedStatus>;
-  background_theme: () => Promise<String>;
-  note: () => Promise<String>;
-  reg_date: () => Promise<String>;
-  modified_date: () => Promise<String>;
-}
-
-export interface BookFeedSubscription
-  extends Promise<AsyncIterator<BookFeed>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  book: <T = BookSubscription>() => T;
-  rating: () => Promise<AsyncIterator<Int>>;
-  status: () => Promise<AsyncIterator<FeedStatus>>;
-  background_theme: () => Promise<AsyncIterator<String>>;
-  note: () => Promise<AsyncIterator<String>>;
-  reg_date: () => Promise<AsyncIterator<String>>;
-  modified_date: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BookFeedConnection {
-  pageInfo: PageInfo;
-  edges: BookFeedEdge[];
-}
-
-export interface BookFeedConnectionPromise
-  extends Promise<BookFeedConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<BookFeedEdge>>() => T;
-  aggregate: <T = AggregateBookFeedPromise>() => T;
-}
-
-export interface BookFeedConnectionSubscription
-  extends Promise<AsyncIterator<BookFeedConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<BookFeedEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateBookFeedSubscription>() => T;
-}
-
-export interface BookFeedEdge {
-  node: BookFeed;
-  cursor: String;
-}
-
-export interface BookFeedEdgePromise
-  extends Promise<BookFeedEdge>,
-    Fragmentable {
-  node: <T = BookFeedPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface BookFeedEdgeSubscription
-  extends Promise<AsyncIterator<BookFeedEdge>>,
-    Fragmentable {
-  node: <T = BookFeedSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateBookFeed {
-  count: Int;
-}
-
-export interface AggregateBookFeedPromise
-  extends Promise<AggregateBookFeed>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateBookFeedSubscription
-  extends Promise<AsyncIterator<AggregateBookFeed>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
 export interface Post {
   id: ID_Output;
-  like_count: Int;
-  liked: Boolean;
+  likes: Int;
+  backgroundTheme?: String;
+  content?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface PostPromise extends Promise<Post>, Fragmentable {
   id: () => Promise<ID_Output>;
   user: <T = UserPromise>() => T;
-  bookfeed: <T = BookFeedPromise>() => T;
-  like_count: () => Promise<Int>;
-  liked: () => Promise<Boolean>;
+  userBook: <T = UserBookPromise>() => T;
+  likes: () => Promise<Int>;
+  backgroundTheme: () => Promise<String>;
+  content: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface PostSubscription
@@ -955,26 +1356,140 @@ export interface PostSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   user: <T = UserSubscription>() => T;
-  bookfeed: <T = BookFeedSubscription>() => T;
-  like_count: () => Promise<AsyncIterator<Int>>;
-  liked: () => Promise<AsyncIterator<Boolean>>;
+  userBook: <T = UserBookSubscription>() => T;
+  likes: () => Promise<AsyncIterator<Int>>;
+  backgroundTheme: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface User {
   id: ID_Output;
-  name: String;
+  username: String;
+  email: String;
+  password?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  username: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  books: <T = FragmentableArray<UserBook>>(
+    args?: {
+      where?: UserBookWhereInput;
+      orderBy?: UserBookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  posts: <T = FragmentableArray<Post>>(
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
 }
 
 export interface UserSubscription
   extends Promise<AsyncIterator<User>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  username: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  books: <T = Promise<AsyncIterator<UserBookSubscription>>>(
+    args?: {
+      where?: UserBookWhereInput;
+      orderBy?: UserBookOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  posts: <T = Promise<AsyncIterator<PostSubscription>>>(
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+}
+
+export interface UserBook {
+  id: ID_Output;
+  rating?: Float;
+  status?: FeedStatus;
+  readAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface UserBookPromise extends Promise<UserBook>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  user: <T = UserPromise>() => T;
+  book: <T = BookPromise>() => T;
+  posts: <T = FragmentableArray<Post>>(
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  rating: () => Promise<Float>;
+  status: () => Promise<FeedStatus>;
+  readAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserBookSubscription
+  extends Promise<AsyncIterator<UserBook>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  user: <T = UserSubscription>() => T;
+  book: <T = BookSubscription>() => T;
+  posts: <T = Promise<AsyncIterator<PostSubscription>>>(
+    args?: {
+      where?: PostWhereInput;
+      orderBy?: PostOrderByInput;
+      skip?: Int;
+      after?: String;
+      before?: String;
+      first?: Int;
+      last?: Int;
+    }
+  ) => T;
+  rating: () => Promise<AsyncIterator<Float>>;
+  status: () => Promise<AsyncIterator<FeedStatus>>;
+  readAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface PostConnection {
@@ -1085,6 +1600,62 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface UserBookConnection {
+  pageInfo: PageInfo;
+  edges: UserBookEdge[];
+}
+
+export interface UserBookConnectionPromise
+  extends Promise<UserBookConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserBookEdge>>() => T;
+  aggregate: <T = AggregateUserBookPromise>() => T;
+}
+
+export interface UserBookConnectionSubscription
+  extends Promise<AsyncIterator<UserBookConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserBookEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserBookSubscription>() => T;
+}
+
+export interface UserBookEdge {
+  node: UserBook;
+  cursor: String;
+}
+
+export interface UserBookEdgePromise
+  extends Promise<UserBookEdge>,
+    Fragmentable {
+  node: <T = UserBookPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserBookEdgeSubscription
+  extends Promise<AsyncIterator<UserBookEdge>>,
+    Fragmentable {
+  node: <T = UserBookSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateUserBook {
+  count: Int;
+}
+
+export interface AggregateUserBookPromise
+  extends Promise<AggregateUserBook>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserBookSubscription
+  extends Promise<AsyncIterator<AggregateUserBook>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface BatchPayload {
   count: Long;
 }
@@ -1131,7 +1702,11 @@ export interface BookPreviousValues {
   title: String;
   isbn: String;
   author?: String;
-  book_cover?: String;
+  cover?: String;
+  publisher?: String;
+  description?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface BookPreviousValuesPromise
@@ -1141,7 +1716,11 @@ export interface BookPreviousValuesPromise
   title: () => Promise<String>;
   isbn: () => Promise<String>;
   author: () => Promise<String>;
-  book_cover: () => Promise<String>;
+  cover: () => Promise<String>;
+  publisher: () => Promise<String>;
+  description: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface BookPreviousValuesSubscription
@@ -1151,66 +1730,11 @@ export interface BookPreviousValuesSubscription
   title: () => Promise<AsyncIterator<String>>;
   isbn: () => Promise<AsyncIterator<String>>;
   author: () => Promise<AsyncIterator<String>>;
-  book_cover: () => Promise<AsyncIterator<String>>;
-}
-
-export interface BookFeedSubscriptionPayload {
-  mutation: MutationType;
-  node: BookFeed;
-  updatedFields: String[];
-  previousValues: BookFeedPreviousValues;
-}
-
-export interface BookFeedSubscriptionPayloadPromise
-  extends Promise<BookFeedSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = BookFeedPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = BookFeedPreviousValuesPromise>() => T;
-}
-
-export interface BookFeedSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<BookFeedSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = BookFeedSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = BookFeedPreviousValuesSubscription>() => T;
-}
-
-export interface BookFeedPreviousValues {
-  id: ID_Output;
-  rating?: Int;
-  status?: FeedStatus;
-  background_theme?: String;
-  note?: String;
-  reg_date?: String;
-  modified_date?: String;
-}
-
-export interface BookFeedPreviousValuesPromise
-  extends Promise<BookFeedPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  rating: () => Promise<Int>;
-  status: () => Promise<FeedStatus>;
-  background_theme: () => Promise<String>;
-  note: () => Promise<String>;
-  reg_date: () => Promise<String>;
-  modified_date: () => Promise<String>;
-}
-
-export interface BookFeedPreviousValuesSubscription
-  extends Promise<AsyncIterator<BookFeedPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  rating: () => Promise<AsyncIterator<Int>>;
-  status: () => Promise<AsyncIterator<FeedStatus>>;
-  background_theme: () => Promise<AsyncIterator<String>>;
-  note: () => Promise<AsyncIterator<String>>;
-  reg_date: () => Promise<AsyncIterator<String>>;
-  modified_date: () => Promise<AsyncIterator<String>>;
+  cover: () => Promise<AsyncIterator<String>>;
+  publisher: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface PostSubscriptionPayload {
@@ -1240,24 +1764,33 @@ export interface PostSubscriptionPayloadSubscription
 
 export interface PostPreviousValues {
   id: ID_Output;
-  like_count: Int;
-  liked: Boolean;
+  likes: Int;
+  backgroundTheme?: String;
+  content?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface PostPreviousValuesPromise
   extends Promise<PostPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  like_count: () => Promise<Int>;
-  liked: () => Promise<Boolean>;
+  likes: () => Promise<Int>;
+  backgroundTheme: () => Promise<String>;
+  content: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface PostPreviousValuesSubscription
   extends Promise<AsyncIterator<PostPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  like_count: () => Promise<AsyncIterator<Int>>;
-  liked: () => Promise<AsyncIterator<Boolean>>;
+  likes: () => Promise<AsyncIterator<Int>>;
+  backgroundTheme: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -1287,21 +1820,89 @@ export interface UserSubscriptionPayloadSubscription
 
 export interface UserPreviousValues {
   id: ID_Output;
-  name: String;
+  username: String;
+  email: String;
+  password?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
 export interface UserPreviousValuesPromise
   extends Promise<UserPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  username: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface UserPreviousValuesSubscription
   extends Promise<AsyncIterator<UserPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  username: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface UserBookSubscriptionPayload {
+  mutation: MutationType;
+  node: UserBook;
+  updatedFields: String[];
+  previousValues: UserBookPreviousValues;
+}
+
+export interface UserBookSubscriptionPayloadPromise
+  extends Promise<UserBookSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = UserBookPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserBookPreviousValuesPromise>() => T;
+}
+
+export interface UserBookSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserBookSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserBookSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserBookPreviousValuesSubscription>() => T;
+}
+
+export interface UserBookPreviousValues {
+  id: ID_Output;
+  rating?: Float;
+  status?: FeedStatus;
+  readAt: DateTimeOutput;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface UserBookPreviousValuesPromise
+  extends Promise<UserBookPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  rating: () => Promise<Float>;
+  status: () => Promise<FeedStatus>;
+  readAt: () => Promise<DateTimeOutput>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface UserBookPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserBookPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  rating: () => Promise<AsyncIterator<Float>>;
+  status: () => Promise<AsyncIterator<FeedStatus>>;
+  readAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 /*
@@ -1316,6 +1917,16 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
+DateTime scalar input type, allowing Date
+*/
+export type DateTimeInput = Date | string;
+
+/*
+DateTime scalar output type, which is always a string
+*/
+export type DateTimeOutput = string;
+
+/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
 export type Int = number;
@@ -1324,6 +1935,11 @@ export type Int = number;
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
+
+/*
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point). 
+*/
+export type Float = number;
 
 export type Long = string;
 
@@ -1341,7 +1957,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "BookFeed",
+    name: "UserBook",
     embedded: false
   },
   {
