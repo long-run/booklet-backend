@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import { IResolvers } from 'graphql-tools';
 import { generateToken } from './authorizer';
+import NaverBookApi from "./Service/NaverBookApi";
 
 // @ts-ignore
 export default {
@@ -36,15 +37,16 @@ export default {
     }
   },
   Query: {
-    search: async (_, { keyword }, ctx) => {
-      return ctx.prisma.books({
-        where: {
-          OR: [
-            { title_contains: keyword },
-            { author_contains: keyword },
-          ]
-        }
-      });
+    search: async (_, { keyword }) => {
+      return await NaverBookApi.search(keyword);
+      // return ctx.prisma.books({
+      //   where: {
+      //     OR: [
+      //       { title_contains: keyword },
+      //       { author_contains: keyword },
+      //     ]
+      //   }
+      // });
     }
   }
 } as IResolvers;
