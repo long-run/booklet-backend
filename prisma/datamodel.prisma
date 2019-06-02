@@ -1,12 +1,26 @@
 type User {
   id: ID! @unique
-  username: String! @unique
   email: String! @unique
-  password: String
+	nickname: String! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
+	loginedAt: DateTime!
   books: [UserBook!] @relation(name: "UserBookByUser" onDelete: CASCADE)
   posts: [Post!] @relation(name: "PostsByUser" onDelete: CASCADE)
+	following: [User!] @relation(name: "FollowingToUser" onDelete: CASCADE)
+	followed: [User!] @relation(name: "FollowedFromUser" onDelete: CASCADE)
+	photo: String
+	bio: String
+	social: Social
+}
+
+type Social {
+	id: ID! @unique
+	type: String!
+	user: User!
+	externalId: String!
+	createdAt: DateTime!
+	updatedAt: DateTime!
 }
 
 type Book {
@@ -27,7 +41,6 @@ type UserBook {
   book: Book!
   posts: [Post!]! @relation(name: "PostsByUserBooks" onDelete: CASCADE)
   rating: Float @default(value: 0.0)
-  status: FeedStatus @default(value: "WANT_TO_READ")
   readAt: DateTime!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -40,6 +53,7 @@ type Post {
   likes: Int! @default(value: 0)
   backgroundTheme: String @default(value: "")
   content: String @default(value: "")
+	status: FeedStatus @default(value: "WANT_TO_READ")
   createdAt: DateTime!
   updatedAt: DateTime!
 }
