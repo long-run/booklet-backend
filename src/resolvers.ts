@@ -6,14 +6,18 @@ import NaverBookApi from "./Service/NaverBookApi";
 // @ts-ignore
 export default {
   Mutation: {
-    register: async (_, { username, email, password }, ctx) => {
-      const hashedPassword = await bcrypt.hash(password, 10);
+    register: async (_, { email, id }, ctx) => {
+      // todo
       const user = await ctx.prisma.createUser({
-        username,
         email,
-        password: hashedPassword,
+        nickname: 'test',
       });
-      return user;
+      await ctx.prisma.createSocial({
+        externalId: id,
+        type: 'test',
+        user,
+      });
+      return ctx.prisma.user({ email });
     },
 
     login: async (_, { username, password }, ctx) => {
@@ -38,6 +42,7 @@ export default {
   },
   Query: {
     search: async (_, { keyword }) => {
+      // todo
       return await NaverBookApi.search(keyword);
       // return ctx.prisma.books({
       //   where: {
@@ -47,6 +52,17 @@ export default {
       //     ]
       //   }
       // });
+    },
+    currentUser: async(_, {}, ctx) => {
+      // todo
+      const user = await ctx.prisma.user({ username: 'test' });
+      if (!user) {
+        return await ctx.prisma.createUser({
+          email: 'test@test.com',
+          nickname: 'test',
+        });
+      }
+      return user;
     }
   }
 } as IResolvers;

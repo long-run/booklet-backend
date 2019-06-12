@@ -23,8 +23,8 @@ type Query {
 }
 
 type Mutation {
-  register(username: String!, password: String!): User!
-  login(username: String!, password: String!): LoginResponse!
+  register(email: String!, password: String!): User!
+  login(email: String!, password: String!): LoginResponse!
 }
 
 type LoginResponse {
