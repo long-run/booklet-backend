@@ -4,7 +4,7 @@ type User {
 	nickname: String! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
-	loginedAt: DateTime!
+	loginedAt: DateTime
   books: [UserBook!] @relation(name: "UserBookByUser" onDelete: CASCADE)
   posts: [Post!] @relation(name: "PostsByUser" onDelete: CASCADE)
 	following: [User!] @relation(name: "FollowingToUser" onDelete: CASCADE)
